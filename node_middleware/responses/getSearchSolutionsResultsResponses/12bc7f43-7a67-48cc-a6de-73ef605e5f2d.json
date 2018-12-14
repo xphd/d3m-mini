@@ -1,0 +1,13 @@
+{
+  "progress": {
+    "state": "RUNNING",
+    "status": "",
+    "start": { "seconds": "1544822811", "nanos": 773295000 },
+    "end": null
+  },
+  "done_ticks": 1,
+  "all_ticks": 0,
+  "solution_id": "12bc7f43-7a67-48cc-a6de-73ef605e5f2d",
+  "internal_score": 0,
+  "scores": []
+}
