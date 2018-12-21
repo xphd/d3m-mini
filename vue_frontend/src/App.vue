@@ -1,12 +1,12 @@
 <template>
   <div id="app">    
     <h1>{{ msg }}</h1>
-    <FlowChart></FlowChart> 
+    <WorkFlow></WorkFlow> 
   </div>
 </template>
 
 <script>
-import FlowChart from "./FlowChart.vue";
+import WorkFlow from "./WorkFlow.vue";
 export default {
   name: "app",
   data() {
@@ -15,8 +15,9 @@ export default {
     };
   },
   components: {
-    FlowChart
+    WorkFlow
   }
+  
 };
 </script>
 
@@ -40,10 +41,10 @@ ul {
   padding: 0;
 }
 
-li {
+/* li {
   display: inline-block;
   margin: 0 10px;
-}
+} */
 
 a {
   color: #42b983;

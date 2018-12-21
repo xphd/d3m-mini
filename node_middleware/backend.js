@@ -31,10 +31,7 @@ const steps = descriptionJSON["pipeline"]["steps"];
 console.log(steps.length);
 
 serverSocket.on("connection", socket => {
-  console.log("Server: socket connected!!");
-  socket.on("requestFlowchart", () => {
-    console.log("Server: responseFlowchart");
-    // console.log(steps.length);
-    socket.emit("responseFlowchart", steps);
-  });
+  
+
+
 });
