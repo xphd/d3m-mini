@@ -35,51 +35,55 @@ const grpcClientWrapper = require("./Wrapper/Wrapper.js");
 // console.log(steps.length);
 
 serverSocket.on("connection", socket => {
+  var promise = null;
+  var promise2 = null;
   socket.on("hello", () => {
-    console.log("echo hello");
+    console.log("hello");
     grpcClientWrapper.connect(ta2ConnectionString);
-    grpcClientWrapper.helloLoop();
+    promise = grpcClientWrapper.helloLoop();
   });
   socket.on("searchSolutions", () => {
-    console.log("echo searchSolutions");
+    console.log("searchSolutions");
+    promise2 = promise.then(grpcClientWrapper.searchSolutions);
   });
   socket.on("getSearchSolutionsResults", () => {
-    console.log("echo getSearchSolutionsResults");
+    console.log("getSearchSolutionsResults");
   });
   socket.on("endSearchSolutions", () => {
-    console.log("echo endSearchSolutions");
+    console.log("endSearchSolutions");
   });
   socket.on("stopSearchSolutions", () => {
-    console.log("echo stopSearchSolutions");
+    console.log("stopSearchSolutions");
   });
   socket.on("describeSolution", () => {
-    console.log("echo describeSolution");
+    console.log("describeSolution");
   });
   socket.on("scoreSolution", () => {
-    console.log("echo scoreSolution");
+    console.log("scoreSolution");
+    promise2.then(grpcClientWrapper.scoreSolutions);
   });
   socket.on("getScoreSolutionResults", () => {
-    console.log("echo getScoreSolutionResults");
+    console.log("getScoreSolutionResults");
   });
   socket.on("fitSolution", () => {
-    console.log("echo fitSolution");
+    console.log("fitSolution");
   });
   socket.on("getFitSolutionResults", () => {
-    console.log("echo getFitSolutionResults");
+    console.log("getFitSolutionResults");
   });
   socket.on("produceSolution", () => {
-    console.log("echo produceSolution");
+    console.log("produceSolution");
   });
   socket.on("getProduceSolutionResults", () => {
-    console.log("echo getProduceSolutionResults");
+    console.log("getProduceSolutionResults");
   });
   socket.on("solutionExport", () => {
-    console.log("echo solutionExport");
+    console.log("solutionExport");
   });
   socket.on("updateProblem", () => {
-    console.log("echo updateProblem");
+    console.log("updateProblem");
   });
   socket.on("listPrimitives", () => {
-    console.log("echo listPrimitives");
+    console.log("listPrimitives");
   });
 });
