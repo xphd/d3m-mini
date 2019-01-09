@@ -85,5 +85,6 @@ serverSocket.on("connection", socket => {
   });
   socket.on("listPrimitives", () => {
     console.log("listPrimitives");
+    promise2 = promise.then(grpcClientWrapper.listPrimitives);
   });
 });
