@@ -2,7 +2,7 @@
 const properties = require("../properties");
 const proto = properties.proto;
 
-listPrimitives = function() {
+function listPrimitives() {
   console.log("listPrimitives.js");
   return new Promise(function(fulfill, reject) {
     const client = properties.client;
@@ -15,6 +15,6 @@ listPrimitives = function() {
       }
     });
   });
-};
+}
 
 module.exports = listPrimitives;
