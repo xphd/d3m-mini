@@ -49,6 +49,8 @@ function getSearchSolutionResults(sessionVar, fulfill, reject) {
         let solution = { solutionID: solutionID };
         sessionVar.solutions.set(solution.solutionID, solution);
 
+        // console.log(sessionVar.solutions)
+
         // Added by Alex, for the purpose of Pipeline Visulization
         let pathPrefix = "responses/getSearchSolutionsResultsResponses/";
         let pathMid = solutionID;
@@ -73,6 +75,9 @@ function getSearchSolutionResults(sessionVar, fulfill, reject) {
     });
     call.on("end", function(err) {
       console.log("End of result: getSearchSolutionResults");
+
+      
+
       if (err) console.log("err is ", err);
       _fulfill(sessionVar);
     });

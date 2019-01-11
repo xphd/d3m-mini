@@ -87,4 +87,20 @@ serverSocket.on("connection", socket => {
     console.log("listPrimitives");
     promise2 = promise.then(grpcClientWrapper.listPrimitives);
   });
+  socket.on("getAllSolutions", () => {
+    console.log("getAllSolutions");
+    let solutions = grpcClientWrapper.getAllSolutions();
+    // let solutions = new Map();
+    // solutions.set("1",{"id":"1"});
+    // solutions.set("2",{"id":"1"})
+
+    // console.log(solutions)
+    console.log(Array.from(solutions.keys()));
+    socket.emit("getAllSolutionsResponse", Array.from(solutions.keys()));
+  });
+  socket.on("scoreSelectedSolutions", solutionIDs_selected => {
+    console.log("scoreSelectedSolutions")
+    let metrics = ["accuracy"];
+    grpcClientWrapper.getScores(solutionIDs_selected, metrics);
+  });
 });
