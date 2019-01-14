@@ -111,11 +111,15 @@ function getScoresResponse(solutionID, scoreRequestID, fulfill, reject) {
       // console.log("METRICS", metrics);
       // console.log("VALUES", values);
       // solution.scores = {};
+      let solution = properties.solutions.get(solutionID);
       for (let i = 0; i < metrics.length; i++) {
         // solution.scores = { f1Macro: _.mean(values) };
         console.log("METRICS", metrics[i], values, "num values", values.length);
         console.log(values);
-        // solution.scores[metrics[i].metric] = _.mean(values);
+
+        solution.scores[metrics[i].metric] = _.mean(values);
+        console.log("solution:", solutionID);
+        console.log(solution);
       }
     } else {
       console.log(
