@@ -1,16 +1,19 @@
 <template>
   <div id="app">
-    <WorkFlow/>
+    <!-- <WorkFlow/> -->
+    <ScoreSolution/>
   </div>
 </template>
 
 <script>
-import WorkFlow from "./components/WorkFlow.vue";
+// import WorkFlow from "./components/WorkFlow.vue";
+import ScoreSolution from "./components/ScoreSolution.vue";
 
 export default {
   name: "app",
   components: {
-    WorkFlow
+    // WorkFlow,
+    ScoreSolution
   }
 };
 </script>
