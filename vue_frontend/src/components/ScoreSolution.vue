@@ -6,8 +6,8 @@
     <br>
     <button @click="searchSolutions">SearchSolutions</button>
     <br>
-    <button @click="listPrimitives">ListPrimitives</button>
-    <br>
+    <!-- <button @click="listPrimitives">ListPrimitives</button> -->
+    <!-- <br> -->
     <button @click="getAllSolutions">GetAllSolutions</button>
 
     <div>
@@ -28,21 +28,14 @@ export default {
   data() {
     return {
       solutionIDs: [],
-      solutionIDs_selected: []
+      solutionIDs_selected: [],
+      metrics_selected: [],
+      metrics: []
     };
   },
   methods: {
-    hello() {
-      console.log("hello");
-      this.$socket.emit("hello");
-    },
-    searchSolutions() {
-      console.log("searchSolutions");
-      this.$socket.emit("searchSolutions");
-    },
-    listPrimitives() {
-      console.log("listPrimitives");
-      this.$socket.emit("listPrimitives");
+    helloSearch() {
+      this.$socket.emit("helloSearch");
     },
     getAllSolutions() {
       console.log("getAllSolutions");
@@ -52,6 +45,18 @@ export default {
       console.log("scoreSelectedSolutions");
       this.$socket.emit("scoreSelectedSolutions", this.solutionIDs_selected);
     }
+    // hello() {
+    //   console.log("hello");
+    //   this.$socket.emit("hello");
+    // },
+    // searchSolutions() {
+    //   console.log("searchSolutions");
+    //   this.$socket.emit("searchSolutions");
+    // },
+    // listPrimitives() {
+    //   console.log("listPrimitives");
+    //   this.$socket.emit("listPrimitives");
+    // },
   },
   sockets: {
     connect() {

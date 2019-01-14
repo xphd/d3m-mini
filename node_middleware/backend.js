@@ -18,28 +18,18 @@ server.listen(PORT);
 console.log("Server listening " + PORT);
 
 serverSocket.on("connection", socket => {
-  var promise = null;
-  var promise2 = null;
-  socket.on("hello", () => {
-    console.log("hello");
+  socket.on("helloSearch", () => {
     grpcClientWrapper.connect(TA2PORT);
-    promise = grpcClientWrapper.helloLoop();
-  });
-  socket.on("searchSolutions", () => {
-    console.log("searchSolutions");
-    promise2 = promise.then(grpcClientWrapper.searchSolutions);
+    grpcClientWrapper.helloLoop().then(grpcClientWrapper.searchSolutions);
   });
 
-  socket.on("listPrimitives", () => {
-    console.log("listPrimitives");
-    promise2 = promise.then(grpcClientWrapper.listPrimitives);
-  });
   socket.on("getAllSolutions", () => {
     console.log("getAllSolutions");
     let solutions = grpcClientWrapper.getAllSolutions();
-    console.log(Array.from(solutions.keys()));
+    // let solution = console.log(Array.from(solutions.keys()));
     socket.emit("getAllSolutionsResponse", Array.from(solutions.keys()));
   });
+
   socket.on("scoreSelectedSolutions", solutionIDs_selected => {
     console.log("scoreSelectedSolutions");
     let metrics = ["accuracy"];
