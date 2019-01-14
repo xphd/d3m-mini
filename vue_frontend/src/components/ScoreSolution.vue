@@ -30,7 +30,7 @@ export default {
     return {
       solutionIDs: [],
       solutionIDs_selected: [],
-      metrics_selected: ["accuracy", "recall", "f1"],
+      metrics_selected: ["accuracy", "f1"],
       metrics: [
         "accuracy",
         "recall",
@@ -52,6 +52,9 @@ export default {
         // "loss"
       ]
     };
+  },
+  mounted() {
+    this.helloSearch();
   },
   methods: {
     helloSearch() {

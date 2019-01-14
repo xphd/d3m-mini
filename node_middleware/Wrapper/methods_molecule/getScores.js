@@ -1,4 +1,5 @@
 const fs = require("fs");
+const _ = require("lodash");
 const appRoot = require("app-root-path");
 const evaluationConfig = require(appRoot + "/tufts_gt_wisc_configuration.json");
 
@@ -111,13 +112,15 @@ function getScoresResponse(solutionID, scoreRequestID, fulfill, reject) {
       // console.log("METRICS", metrics);
       // console.log("VALUES", values);
       // solution.scores = {};
-      let solution = properties.solutions.get(solutionID);
+      let solution = properties.sessionVar.solutions.get(solutionID);
       for (let i = 0; i < metrics.length; i++) {
         // solution.scores = { f1Macro: _.mean(values) };
-        console.log("METRICS", metrics[i], values, "num values", values.length);
+        let metric = metrics[i];
+        console.log("METRICS", metric, values, "num values", values.length);
         console.log(values);
 
-        solution.scores[metrics[i].metric] = _.mean(values);
+        // solution.scores[metric.metric] = _.mean(values);
+        solution.scores[metric.metric] = values[i];
         console.log("solution:", solutionID);
         console.log(solution);
       }
