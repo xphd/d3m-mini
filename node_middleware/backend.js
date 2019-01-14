@@ -30,9 +30,14 @@ serverSocket.on("connection", socket => {
     socket.emit("getAllSolutionsResponse", Array.from(solutions.keys()));
   });
 
-  socket.on("scoreSelectedSolutions", solutionIDs_selected => {
-    console.log("scoreSelectedSolutions");
-    let metrics = ["accuracy"];
-    grpcClientWrapper.getScores(solutionIDs_selected, metrics);
-  });
+  socket.on(
+    "scoreSelectedSolutions",
+    (solutionIDs_selected, metrics_selected) => {
+      console.log("scoreSelectedSolutions");
+      // console.log(solutionIDs_selected, metrics_selected);
+
+      // let metrics = ["accuracy"];
+      grpcClientWrapper.getScores(solutionIDs_selected, metrics_selected);
+    }
+  );
 });

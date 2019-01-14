@@ -1,3 +1,4 @@
+const fs = require("fs");
 const appRoot = require("app-root-path");
 const evaluationConfig = require(appRoot + "/tufts_gt_wisc_configuration.json");
 
@@ -13,8 +14,13 @@ const getMappedType = require("../functions/getMappedType");
 const handleImageUrl = require("../functions/handleImageUrl");
 
 function getScores(solutionIDs_selected, metrics) {
-  console.log("getScores")
+  console.log("getScores");
   let chain = Promise.resolve();
+
+  let pathPrefix = "responses/getScoreResponses/";
+  if (!fs.existsSync(pathPrefix)) {
+    fs.mkdirSync(pathPrefix);
+  }
   for (let i = 0; i < solutionIDs_selected.length; i++) {
     let solutionID = solutionIDs_selected[i];
     chain = chain.then(() => {
@@ -73,13 +79,13 @@ function getScore(solutionID, metrics) {
         reject(err);
       } else {
         let scoreRequestID = scoreSolutionResponse.request_id;
-        getScoresResponse(scoreRequestID, fulfill, reject);
+        getScoresResponse(solutionID, scoreRequestID, fulfill, reject);
       }
     });
   });
 }
 
-function getScoresResponse(scoreRequestID, fulfill, reject) {
+function getScoresResponse(solutionID, scoreRequestID, fulfill, reject) {
   let _fulfill = fulfill;
   let _reject = reject;
   let getScoreSolutionResultsRequest = new proto.GetScoreSolutionResultsRequest();
@@ -108,7 +114,7 @@ function getScoresResponse(scoreRequestID, fulfill, reject) {
       for (let i = 0; i < metrics.length; i++) {
         // solution.scores = { f1Macro: _.mean(values) };
         console.log("METRICS", metrics[i], values, "num values", values.length);
-        console.log(values)
+        console.log(values);
         // solution.scores[metrics[i].metric] = _.mean(values);
       }
     } else {
@@ -117,8 +123,13 @@ function getScoresResponse(scoreRequestID, fulfill, reject) {
         getScoreSolutionResultsResponse
       );
     }
-
-   
+    // Added by Alex, for the purpose of Pipeline Visulization
+    let pathPrefix = "responses/getScoreResponses/";
+    let pathMid = solutionID;
+    let pathAffix = ".json";
+    let path = pathPrefix + pathMid + pathAffix;
+    let responseStr = JSON.stringify(getScoreSolutionResultsResponse);
+    fs.writeFileSync(path, responseStr);
   });
   call.on("error", function(err) {
     console.log("Error!getScoreSolutionResults: ", scoreRequestID);
