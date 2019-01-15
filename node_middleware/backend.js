@@ -40,4 +40,9 @@ serverSocket.on("connection", socket => {
       grpcClientWrapper.getScores(solutionIDs_selected, metrics_selected);
     }
   );
+
+  socket.on("describeSolutions", solutionIDs_selected => {
+    console.log("describeSolutions");
+    grpcClientWrapper.getDescription(solutionIDs_selected);
+  });
 });

@@ -94,6 +94,14 @@ function getScoresResponse(solutionID, scoreRequestID, fulfill, reject) {
   const client = properties.client;
   let call = client.getScoreSolutionResults(getScoreSolutionResultsRequest);
   call.on("data", function(getScoreSolutionResultsResponse) {
+    // Added by Alex, for the purpose of Pipeline Visulization
+    let pathPrefix = "responses/getScoreResponses/";
+    let pathMid = solutionID;
+    let pathAffix = ".json";
+    let path = pathPrefix + pathMid + pathAffix;
+    let responseStr = JSON.stringify(getScoreSolutionResultsResponse);
+    fs.writeFileSync(path, responseStr);
+
     if (getScoreSolutionResultsResponse.progress.state === "COMPLETED") {
       // console.log("scoreSolutionResultsResponse", getScoreSolutionResultsResponse);
       /*
@@ -130,13 +138,13 @@ function getScoresResponse(solutionID, scoreRequestID, fulfill, reject) {
         getScoreSolutionResultsResponse
       );
     }
-    // Added by Alex, for the purpose of Pipeline Visulization
-    let pathPrefix = "responses/getScoreResponses/";
-    let pathMid = solutionID;
-    let pathAffix = ".json";
-    let path = pathPrefix + pathMid + pathAffix;
-    let responseStr = JSON.stringify(getScoreSolutionResultsResponse);
-    fs.writeFileSync(path, responseStr);
+    // // Added by Alex, for the purpose of Pipeline Visulization
+    // let pathPrefix = "responses/getScoreResponses/";
+    // let pathMid = solutionID;
+    // let pathAffix = ".json";
+    // let path = pathPrefix + pathMid + pathAffix;
+    // let responseStr = JSON.stringify(getScoreSolutionResultsResponse);
+    // fs.writeFileSync(path, responseStr);
   });
   call.on("error", function(err) {
     console.log("Error!getScoreSolutionResults: ", scoreRequestID);

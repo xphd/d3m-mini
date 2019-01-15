@@ -20,6 +20,7 @@
     </div>
 
     <button @click="scoreSelectedSolutions">scoreSelectedSolutions</button>
+    <button @click="describeSolutions">describeSolutions</button>
   </div>
 </template>
 
@@ -36,20 +37,20 @@ export default {
         "recall",
         "f1",
         "f1Micro",
-        "f1Macro"
-        // "rocAuc",
-        // "rocAucMicro",
-        // "rocAucMacro",
-        // "meanSquaredError",
-        // "rootMeanSquaredError",
-        // "rootMeanSquareErrorAvg",
-        // "meanAbsoluteError",
-        // "rSquared",
-        // "normalizedMutualInformation",
-        // "jaccardSimilarityScore",
-        // "precisionAtTopK",
-        // "objectDetectionAveragePrecision",
-        // "loss"
+        "f1Macro",
+        "rocAuc",
+        "rocAucMicro",
+        "rocAucMacro",
+        "meanSquaredError",
+        "rootMeanSquaredError",
+        "rootMeanSquareErrorAvg",
+        "meanAbsoluteError",
+        "rSquared",
+        "normalizedMutualInformation",
+        "jaccardSimilarityScore",
+        "precisionAtTopK",
+        "objectDetectionAveragePrecision",
+        "loss"
       ]
     };
   },
@@ -71,6 +72,10 @@ export default {
         this.solutionIDs_selected,
         this.metrics_selected
       );
+    },
+    describeSolutions() {
+      console.log("describeSolutions");
+      this.$socket.emit("describeSolutions", this.solutionIDs_selected);
     }
   },
   sockets: {
