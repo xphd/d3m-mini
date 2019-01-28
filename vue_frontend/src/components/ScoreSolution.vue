@@ -4,12 +4,17 @@
     <button @click="helloSearch">Hello and Search Solutions</button>
     <br>
     <button @click="getAllSolutions">GetAllSolutions</button>
+    <button @click="scoreSelectedSolutions">scoreSelectedSolutions</button>
+    <button @click="describeSolutions">describeSolutions</button>
     <div>
       <li v-for="(solutionID, index) in solutionIDs" :key="index">
         <input type="checkbox" :value="solutionID" v-model="solutionIDs_selected">
         {{solutionID}}
       </li>
       <p>{{solutionIDs_selected}}</p>
+
+      <input v-model="solutionID_selected">
+      <button @click="describeSolution">describeSolution</button>
     </div>
     <div>
       <li v-for="(metric, index) in metrics" :key="index">
@@ -18,9 +23,6 @@
       </li>
       <p>{{metrics_selected}}</p>
     </div>
-
-    <button @click="scoreSelectedSolutions">scoreSelectedSolutions</button>
-    <button @click="describeSolutions">describeSolutions</button>
   </div>
 </template>
 
@@ -55,7 +57,7 @@ export default {
     };
   },
   mounted() {
-    this.helloSearch();
+    // this.helloSearch();
   },
   methods: {
     helloSearch() {
@@ -75,6 +77,11 @@ export default {
     },
     describeSolutions() {
       console.log("describeSolutions");
+      this.$socket.emit("describeSolutions", this.solutionIDs_selected);
+    },
+    describeSolution() {
+      this.solutionIDs_selected = [];
+      this.solutionIDs_selected.push(this.solutionID_selected);
       this.$socket.emit("describeSolutions", this.solutionIDs_selected);
     }
   },
