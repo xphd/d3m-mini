@@ -3,6 +3,7 @@ const fs = require("fs");
 // import variables
 const properties = require("../properties");
 const proto = properties.proto;
+const sessionVar = properties.sessionVar;
 
 function getDescriptions(solutionIDs_selected) {
   console.log("describeSolutions called");

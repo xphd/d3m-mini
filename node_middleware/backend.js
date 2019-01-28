@@ -43,6 +43,6 @@ serverSocket.on("connection", socket => {
 
   socket.on("describeSolutions", solutionIDs_selected => {
     console.log("describeSolutions");
-    grpcClientWrapper.getDescription(solutionIDs_selected);
+    grpcClientWrapper.getDescriptions(solutionIDs_selected);
   });
 });

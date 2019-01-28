@@ -17,6 +17,7 @@ const problemSetSerachSolutionRequest = require("./problemSetSerachSolutionReque
 const properties = require("./properties");
 
 const getAllSolutions = require("./methods_molecule/getAllSolutions");
+const getDescriptions = require("./methods_molecule/getDescriptions");
 const getScores = require("./methods_molecule/getScores");
 
 exports.sessionVar = properties.sessionVar;
@@ -36,6 +37,7 @@ exports.listPrimitives = listPrimitives;
 exports.problemSetSerachSolutionRequest = problemSetSerachSolutionRequest;
 
 exports.getAllSolutions = getAllSolutions;
+exports.getDescriptions = getDescriptions;
 exports.getScores = getScores;
 
 exports.connect = function(ta2_url) {
