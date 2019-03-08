@@ -19,6 +19,8 @@ const properties = require("./properties");
 const getAllSolutions = require("./methods_molecule/getAllSolutions");
 const getDescriptions = require("./methods_molecule/getDescriptions");
 const getScores = require("./methods_molecule/getScores");
+const getFitSolutions = require("./methods_molecule/getFitSolutions");
+const getProduceSolutions = require("./methods_molecule/getProduceSolutions")
 
 exports.sessionVar = properties.sessionVar;
 
@@ -39,6 +41,8 @@ exports.problemSetSerachSolutionRequest = problemSetSerachSolutionRequest;
 exports.getAllSolutions = getAllSolutions;
 exports.getDescriptions = getDescriptions;
 exports.getScores = getScores;
+exports.getFitSolutions = getFitSolutions;
+exports.getProduceSolutions = getProduceSolutions;
 
 exports.connect = function(ta2_url) {
   console.log("Connect to:" + ta2_url);

@@ -12,7 +12,7 @@ const app = express();
 const server = http.createServer(app);
 const serverSocket = socketIO(server, { origins: "*:*" });
 
-const TA2PORT = "localhost:50051";
+const TA2PORT = "localhost:50054";
 const PORT = 9090;
 server.listen(PORT);
 console.log("Server listening " + PORT);
@@ -44,5 +44,15 @@ serverSocket.on("connection", socket => {
   socket.on("describeSolutions", solutionIDs_selected => {
     console.log("describeSolutions");
     grpcClientWrapper.getDescriptions(solutionIDs_selected);
+  });
+
+  socket.on("fitSolutions", solutionIDs_selected => {
+    console.log("fitSolutions");
+    grpcClientWrapper.getFitSolutions(solutionIDs_selected);
+  });
+
+  socket.on("produceSolutions", solutionIDs_selected => {
+    console.log("produceSolutions");
+    grpcClientWrapper.getProduceSolutions(solutionIDs_selected);
   });
 });

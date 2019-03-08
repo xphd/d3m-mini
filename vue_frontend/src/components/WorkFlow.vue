@@ -6,6 +6,9 @@
     <button @click="getAllSolutions">GetAllSolutions</button>
     <button @click="scoreSelectedSolutions">scoreSelectedSolutions</button>
     <button @click="describeSolutions">describeSolutions</button>
+    <button @click="fitSolutions">fitSolutions</button>
+    <button @click="produceSolutions">produceSolutions</button>
+
     <div>
       <li v-for="(solutionID, index) in solutionIDs" :key="index">
         <input type="checkbox" :value="solutionID" v-model="solutionIDs_selected">
@@ -33,26 +36,26 @@ export default {
     return {
       solutionIDs: [],
       solutionIDs_selected: [],
-      metrics_selected: ["accuracy", "f1"],
+      metrics_selected: ["f1Macro"],
       metrics: [
-        "accuracy",
-        "recall",
-        "f1",
-        "f1Micro",
-        "f1Macro",
-        "rocAuc",
-        "rocAucMicro",
-        "rocAucMacro",
-        "meanSquaredError",
-        "rootMeanSquaredError",
-        "rootMeanSquareErrorAvg",
-        "meanAbsoluteError",
-        "rSquared",
-        "normalizedMutualInformation",
-        "jaccardSimilarityScore",
-        "precisionAtTopK",
-        "objectDetectionAveragePrecision",
-        "loss"
+        // "accuracy",
+        // "recall",
+        // "f1",
+        // "f1Micro",
+        "f1Macro"
+        // "rocAuc",
+        // "rocAucMicro",
+        // "rocAucMacro",
+        // "meanSquaredError",
+        // "rootMeanSquaredError",
+        // "rootMeanSquareErrorAvg",
+        // "meanAbsoluteError",
+        // "rSquared",
+        // "normalizedMutualInformation",
+        // "jaccardSimilarityScore",
+        // "precisionAtTopK",
+        // "objectDetectionAveragePrecision",
+        // "loss"
       ]
     };
   },
@@ -83,6 +86,14 @@ export default {
       this.solutionIDs_selected = [];
       this.solutionIDs_selected.push(this.solutionID_selected);
       this.$socket.emit("describeSolutions", this.solutionIDs_selected);
+    },
+
+    fitSolutions() {
+      this.$socket.emit("fitSolutions", this.solutionIDs_selected);
+    },
+
+    produceSolutions() {
+      this.$socket.emit("produceSolutions", this.solutionIDs_selected);
     }
   },
   sockets: {
