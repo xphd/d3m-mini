@@ -61,6 +61,7 @@ function getProduceSolution(solutionID) {
       if (sessionVar.ta2Ident.user_agent === "cmu_ta2") {
         produceSolutionRequest.setExposeOutputs("");
       }*/
+  console.log("solution.finalOutput is:", solution.finalOutput);
   produceSolutionRequest.setExposeOutputs(solution.finalOutput);
   produceSolutionRequest.setExposeValueTypes([proto.ValueType.CSV_URI]);
   // leaving empty: repeated SolutionRunUser users = 5;

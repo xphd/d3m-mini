@@ -16,11 +16,12 @@ const problemSetSerachSolutionRequest = require("./problemSetSerachSolutionReque
 
 const properties = require("./properties");
 
+const exportSolutions = require("./methods_molecule/exportSolutions");
 const getAllSolutions = require("./methods_molecule/getAllSolutions");
 const getDescriptions = require("./methods_molecule/getDescriptions");
 const getScores = require("./methods_molecule/getScores");
 const getFitSolutions = require("./methods_molecule/getFitSolutions");
-const getProduceSolutions = require("./methods_molecule/getProduceSolutions")
+const getProduceSolutions = require("./methods_molecule/getProduceSolutions");
 
 exports.sessionVar = properties.sessionVar;
 
@@ -38,12 +39,12 @@ exports.listPrimitives = listPrimitives;
 
 exports.problemSetSerachSolutionRequest = problemSetSerachSolutionRequest;
 
+exports.exportSolutions = exportSolutions;
 exports.getAllSolutions = getAllSolutions;
 exports.getDescriptions = getDescriptions;
 exports.getScores = getScores;
 exports.getFitSolutions = getFitSolutions;
 exports.getProduceSolutions = getProduceSolutions;
-
 exports.connect = function(ta2_url) {
   console.log("Connect to:" + ta2_url);
   let proto = properties.proto;

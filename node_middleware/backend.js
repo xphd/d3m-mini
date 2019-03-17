@@ -55,4 +55,11 @@ serverSocket.on("connection", socket => {
     console.log("produceSolutions");
     grpcClientWrapper.getProduceSolutions(solutionIDs_selected);
   });
+
+  socket.on("exportSolutions", (exportID, rank) => {
+    console.log("exportSolutions");
+    console.log(exportID);
+    console.log(rank);
+    grpcClientWrapper.exportSolutions(exportID, rank);
+  });
 });

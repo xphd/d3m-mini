@@ -30,12 +30,14 @@ function getDescriptions(solutionIDs_selected) {
 }
 
 function getDescription(solutionID) {
+  let solution = properties.sessionVar.solutions.get(solutionID);
+
   // doing the shortcut now and see how far this takes us
-  // console.log("WARNING: TAKING THE DESCRIBE-SOLUTION SHORTCUT FOR NOW");
-  // return new Promise(function(fulfill, reject) {
-  //   solution.finalOutput = "outputs.0";
-  //   fulfill(solution);
-  // });
+  console.log("WARNING: TAKING THE DESCRIBE-SOLUTION SHORTCUT FOR NOW");
+  return new Promise(function(fulfill, reject) {
+    solution.finalOutput = "outputs.0";
+    fulfill(solution);
+  });
   // THIS DOES NOT GET EXECUTED FOR NOW
   console.log("request describe solution with id", solutionID);
   let describeSolutionRequest = new proto.DescribeSolutionRequest();
@@ -49,7 +51,7 @@ function getDescription(solutionID) {
 
   return new Promise(function(fulfill, reject) {
     const client = properties.client;
-    let solution = properties.sessionVar.solutions.get(solutionID);
+
     client.describeSolution(describeSolutionRequest, function(
       err,
       describeSolutionResponse

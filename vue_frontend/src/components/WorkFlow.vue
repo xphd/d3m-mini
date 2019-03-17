@@ -8,7 +8,9 @@
     <button @click="describeSolutions">describeSolutions</button>
     <button @click="fitSolutions">fitSolutions</button>
     <button @click="produceSolutions">produceSolutions</button>
-
+    <button @click="exportSolutions">exportSolutions</button>
+    <input v-model="exportID">
+    <input v-model="rank">
     <div>
       <li v-for="(solutionID, index) in solutionIDs" :key="index">
         <input type="checkbox" :value="solutionID" v-model="solutionIDs_selected">
@@ -37,6 +39,8 @@ export default {
       solutionIDs: [],
       solutionIDs_selected: [],
       metrics_selected: ["f1Macro"],
+      exportID:"",
+      rank:0.0,
       metrics: [
         // "accuracy",
         // "recall",
@@ -94,6 +98,9 @@ export default {
 
     produceSolutions() {
       this.$socket.emit("produceSolutions", this.solutionIDs_selected);
+    },
+    exportSolutions() {
+      this.$socket.emit("exportSolutions", this.exportID, this.rank);
     }
   },
   sockets: {
