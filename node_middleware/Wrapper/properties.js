@@ -1,7 +1,8 @@
 const grpc = require("grpc");
 const appRoot = require("app-root-path");
 
-const PROTO_PATH = appRoot + "/lib/js" + "/protos/v2018.7.7/core.proto";
+// const PROTO_PATH = appRoot + "/lib/js" + "/protos/v2018.7.7/core.proto";
+const PROTO_PATH = appRoot + "/lib/js" + "/protos/v2019.2.27/core.proto";
 
 const properties = {
   // dynamic
@@ -21,7 +22,8 @@ const properties = {
   // static
   proto: grpc.load(PROTO_PATH),
   userAgentTA3: "TA3-TGW",
-  grpcVersion: "2018.7.7",
+  // grpcVersion: "2018.7.7",
+  grpcVersion: "2019.2.27",
   allowed_val_types: [1, 2, 3]
 };
 

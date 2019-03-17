@@ -11,9 +11,9 @@ exportSolutions = function(solutionID, rankStr) {
   // sessionVar.rankVar = sessionVar.rankVar - 0.00000001;
   let rank = parseFloat(rankStr);
   let solutionExportRequest = new proto.SolutionExportRequest();
-  solutionExportRequest.setFittedSolutionId(solutionID);
+  solutionExportRequest.setSolutionId(solutionID);
   solutionExportRequest.setRank(rank);
-  console.log(solutionExportRequest);
+  console.log("solutionExportRequest", solutionExportRequest);
   const client = properties.client;
   client.solutionExport(solutionExportRequest, function(
     solutionExportResponse
