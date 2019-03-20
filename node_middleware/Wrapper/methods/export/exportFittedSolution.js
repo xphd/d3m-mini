@@ -1,19 +1,19 @@
 const fs = require("fs");
 
 // import variables
-const properties = require("../properties");
-const proto = properties.proto;
+const props = require("../../props");
+const proto = props.proto;
 
-exportFittedSolution = function(sessionVar, solutionID) {
-  console.log("export fitted solution", solutionID);
+exportFittedSolution = function(sessionVar, solution_id) {
+  console.log("export fitted solution", solution_id);
   let rank = sessionVar.rankVar;
   sessionVar.rankVar = sessionVar.rankVar - 0.00000001;
   let solutionExportRequest = new proto.SolutionExportRequest();
   solutionExportRequest.setFittedSolutionId(
-    sessionVar.solutions.get(solutionID).fit.fitID
+    sessionVar.solutions.get(solution_id).fit.fitID
   );
   solutionExportRequest.setRank(rank);
-  const client = properties.client;
+  let client = props.client;
   client.solutionExport(solutionExportRequest, function(
     solutionExportResponse
   ) {

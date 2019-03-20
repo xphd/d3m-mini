@@ -1,19 +1,16 @@
 const fs = require("fs");
 
 // import variables
-const properties = require("../properties");
-const proto = properties.proto;
+const props = require("../props");
+const proto = props.proto;
 
-endSearchSolutions = function(sessionVar) {
+function endSearchSolutions(sessionVar) {
   return new Promise(function(fulfill, reject) {
     console.log("end search solutions for search", sessionVar.searchID);
     let endSearchSolutionsRequest = new proto.EndSearchSolutionsRequest();
     endSearchSolutionsRequest.setSearchId(sessionVar.searchID);
-    const client = properties.client;
-    client.endSearchSolutions(endSearchSolutionsRequest, function(
-      err,
-      endSearchSolutionsResponse
-    ) {
+    let client = props.client;
+    client.endSearchSolutions(endSearchSolutionsRequest, (err, response) => {
       if (err) {
         reject(err);
       } else {
@@ -22,11 +19,11 @@ endSearchSolutions = function(sessionVar) {
 
         // Added by Alex, for the purpose of Pipeline Visulization
         let path = "responses/endSearchSolutionsResponse.json";
-        let responseStr = JSON.stringify(endSearchSolutionsResponse);
+        let responseStr = JSON.stringify(props);
         fs.writeFileSync(path, responseStr);
       }
     });
   });
-};
+}
 
 module.exports = endSearchSolutions;

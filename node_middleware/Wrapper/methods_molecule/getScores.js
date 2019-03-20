@@ -4,8 +4,8 @@ const appRoot = require("app-root-path");
 const evaluationConfig = require(appRoot + "/tufts_gt_wisc_configuration.json");
 
 // import variables
-const properties = require("../properties");
-const proto = properties.proto;
+const props = require("../props");
+const proto = props.proto;
 
 // import mappings
 const metric_mappings = require("../mappings/metric_mappings");
@@ -14,7 +14,7 @@ const metric_mappings = require("../mappings/metric_mappings");
 const getMappedType = require("../functions/getMappedType");
 const handleImageUrl = require("../functions/handleImageUrl");
 
-function getScores(solutionIDs_selected, metrics) {
+function getScores(solution_ids_selected, metrics) {
   console.log("getScores");
   let chain = Promise.resolve();
 
@@ -22,10 +22,10 @@ function getScores(solutionIDs_selected, metrics) {
   if (!fs.existsSync(pathPrefix)) {
     fs.mkdirSync(pathPrefix);
   }
-  for (let i = 0; i < solutionIDs_selected.length; i++) {
-    let solutionID = solutionIDs_selected[i];
+  for (let i = 0; i < solution_ids_selected.length; i++) {
+    let solution_id = solution_ids_selected[i];
     chain = chain.then(() => {
-      return getScore(solutionID, metrics);
+      return getScore(solution_id, metrics);
     });
   }
 
@@ -42,10 +42,10 @@ function getScores(solutionIDs_selected, metrics) {
   });
 }
 
-function getScore(solutionID, metrics) {
-  console.log("scoring solution with id", solutionID);
+function getScore(solution_id, metrics) {
+  console.log("scoring solution with id", solution_id);
   let scoreSolutionRequest = new proto.ScoreSolutionRequest();
-  scoreSolutionRequest.setSolutionId(solutionID);
+  scoreSolutionRequest.setSolutionId(solution_id);
 
   let dataset_input = new proto.Value();
   dataset_input.setDatasetUri(
@@ -71,7 +71,7 @@ function getScore(solutionID, metrics) {
   scoreSolutionRequest.setConfiguration(scoringConfiguration);
 
   return new Promise(function(fulfill, reject) {
-    const client = properties.client;
+    let client = props.client;
     client.scoreSolution(scoreSolutionRequest, function(
       err,
       scoreSolutionResponse
@@ -80,23 +80,23 @@ function getScore(solutionID, metrics) {
         reject(err);
       } else {
         let scoreRequestID = scoreSolutionResponse.request_id;
-        getScoresResponse(solutionID, scoreRequestID, fulfill, reject);
+        getScoresResponse(solution_id, scoreRequestID, fulfill, reject);
       }
     });
   });
 }
 
-function getScoresResponse(solutionID, scoreRequestID, fulfill, reject) {
+function getScoresResponse(solution_id, scoreRequestID, fulfill, reject) {
   let _fulfill = fulfill;
   let _reject = reject;
   let getScoreSolutionResultsRequest = new proto.GetScoreSolutionResultsRequest();
   getScoreSolutionResultsRequest.setRequestId(scoreRequestID);
-  const client = properties.client;
+  let client = props.client;
   let call = client.getScoreSolutionResults(getScoreSolutionResultsRequest);
   call.on("data", function(getScoreSolutionResultsResponse) {
     // Added by Alex, for the purpose of Pipeline Visulization
     let pathPrefix = "responses/getScoreResponses/";
-    let pathMid = solutionID;
+    let pathMid = solution_id;
     let pathAffix = ".json";
     let path = pathPrefix + pathMid + pathAffix;
     let responseStr = JSON.stringify(getScoreSolutionResultsResponse);
@@ -120,7 +120,7 @@ function getScoresResponse(solutionID, scoreRequestID, fulfill, reject) {
       // console.log("METRICS", metrics);
       // console.log("VALUES", values);
       // solution.scores = {};
-      let solution = properties.sessionVar.solutions.get(solutionID);
+      let solution = props.sessionVar.solutions.get(solution_id);
       for (let i = 0; i < metrics.length; i++) {
         // solution.scores = { f1Macro: _.mean(values) };
         let metric = metrics[i];
@@ -129,7 +129,7 @@ function getScoresResponse(solutionID, scoreRequestID, fulfill, reject) {
 
         // solution.scores[metric.metric] = _.mean(values);
         solution.scores[metric.metric] = values[i];
-        console.log("solution:", solutionID);
+        console.log("solution:", solution_id);
         console.log(solution);
       }
     } else {
@@ -140,7 +140,7 @@ function getScoresResponse(solutionID, scoreRequestID, fulfill, reject) {
     }
     // // Added by Alex, for the purpose of Pipeline Visulization
     // let pathPrefix = "responses/getScoreResponses/";
-    // let pathMid = solutionID;
+    // let pathMid = solution_id;
     // let pathAffix = ".json";
     // let path = pathPrefix + pathMid + pathAffix;
     // let responseStr = JSON.stringify(getScoreSolutionResultsResponse);

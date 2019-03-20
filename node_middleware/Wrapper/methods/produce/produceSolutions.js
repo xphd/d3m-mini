@@ -1,16 +1,20 @@
 const fs = require("fs");
 
+const props = require("../../props");
 const produceSolution = require("./produceSolution.js");
 
 function produceSolutions(sessionVar) {
-  let solutions = Array.from(sessionVar.solutions.values());
+  let solutions = props.sessionVar.solutions;
+  let solution_ids = Array.from(solutions.keys());
   let chain = Promise.resolve();
-  for (let i = 0; i < solutions.length; i++) {
-    let solution = solutions[i];
-    chain = chain.then(solutionID => {
-      return produceSolution(solution, sessionVar);
+  solution_ids.forEach(id => {
+    chain = chain.then(() => {
+      let solution = solutions.get(id);
+      if (solution.fit != null) {
+        return produceSolution(id);
+      }
     });
-  }
+  });
 
   // Added by Alex, for the purpose of Pipeline Visulization
   let pathPrefix = "responses/produceSolutionResponses/";
@@ -22,17 +26,18 @@ function produceSolutions(sessionVar) {
     fs.mkdirSync(pathPrefix);
   }
 
-  return new Promise(function(fulfill, reject) {
+  let promise = new Promise((fulfill, reject) => {
     chain
-      .then(function(res) {
+      .then(res => {
         console.log("produce solutions RES", res);
         fulfill(sessionVar);
       })
-      .catch(function(err) {
+      .catch(err => {
         // console.log("produce solutions ERR", err);
         reject(err);
       });
   });
+  return promise;
 }
 
 module.exports = produceSolutions;

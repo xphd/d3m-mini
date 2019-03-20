@@ -1,11 +1,11 @@
 // import variables
-const properties = require("../properties");
-const proto = properties.proto;
+const props = require("../props");
+const proto = props.proto;
 
 function listPrimitives() {
   console.log("listPrimitives.js");
-  return new Promise(function(fulfill, reject) {
-    const client = properties.client;
+  let promise = new Promise((fulfill, reject) => {
+    let client = props.client;
     let request = new proto.ListPrimitivesRequest();
     client.listPrimitives(request, (err, response) => {
       if (err) {
@@ -15,6 +15,7 @@ function listPrimitives() {
       }
     });
   });
+  return promise;
 }
 
 module.exports = listPrimitives;

@@ -3,23 +3,22 @@ const appRoot = require("app-root-path");
 const evaluationConfig = require(appRoot + "/tufts_gt_wisc_configuration.json");
 
 // import variables
-const properties = require("../properties");
-const proto = properties.proto;
+const props = require("../props");
+const proto = props.proto;
 
 // import functions
 const handleImageUrl = require("../functions/handleImageUrl.js");
 
-function getProduceSolutions(solutionIDs_selected) {
-  let solutions = solutionIDs_selected;
+function getProduceSolutions(solution_ids_selected) {
   let chain = Promise.resolve();
-  solutionIDs_selected.forEach(solutionID => {
+  solution_ids_selected.forEach(solution_id => {
     chain = chain.then(() => {
-      return getProduceSolution(solutionID);
+      return getProduceSolution(solution_id);
     });
   });
   // for (let i = 0; i < solutions.length; i++) {
   //   let solution = solutions[i];
-  //   chain = chain.then(solutionID => {
+  //   chain = chain.then(solution_id => {
   //     return getProduceSolution(solution);
   //   });
   // }
@@ -47,11 +46,11 @@ function getProduceSolutions(solutionIDs_selected) {
   });
 }
 
-function getProduceSolution(solutionID) {
+function getProduceSolution(solution_id) {
   // console.log("produce solution called");
-  let solution = properties.sessionVar.solutions.get(solutionID);
+  let solution = props.sessionVar.solutions.get(solution_id);
   let produceSolutionRequest = new proto.ProduceSolutionRequest();
-  produceSolutionRequest.setFittedSolutionId(solution.fit.fitID);
+  produceSolutionRequest.setFittedSolutionId(solution_id);
   let dataset_input = new proto.Value();
   dataset_input.setDatasetUri(
     "file://" + handleImageUrl(evaluationConfig.dataset_schema)
@@ -67,7 +66,7 @@ function getProduceSolution(solutionID) {
   // leaving empty: repeated SolutionRunUser users = 5;
 
   return new Promise(function(fulfill, reject) {
-    const client = properties.client;
+    const client = props.client;
     client.produceSolution(produceSolutionRequest, function(
       err,
       produceSolutionResponse
@@ -77,7 +76,7 @@ function getProduceSolution(solutionID) {
       } else {
         let produceSolutionRequestID = produceSolutionResponse.request_id;
         getProduceSolutionResults(
-          solution,
+          solution_id,
           produceSolutionRequestID,
           fulfill,
           reject
@@ -86,7 +85,7 @@ function getProduceSolution(solutionID) {
         // Added by Alex, for the purpose of Pipeline Visulization
         let pathPrefix = "responses/produceSolutionResponses/";
         // let pathMid = produceSolutionRequestID;
-        let pathMid = solution.solutionID;
+        let pathMid = solution_id;
         let pathAffix = ".json";
         let path = pathPrefix + pathMid + pathAffix;
         let responseStr = JSON.stringify(produceSolutionResponse);
@@ -97,11 +96,13 @@ function getProduceSolution(solutionID) {
 }
 
 function getProduceSolutionResults(
-  solution,
+  solution_id,
   produceSolutionRequestID,
   fulfill,
   reject
 ) {
+  let solutions = props.sessionVar.solutions;
+  let solution = olutions.get(solution_id);
   // console.log("get produce solution called");
   let _fulfill = fulfill;
   let _reject = reject;
@@ -109,7 +110,7 @@ function getProduceSolutionResults(
   getProduceSolutionResultsRequest.setRequestId(produceSolutionRequestID);
 
   return new Promise(function(fulfill, reject) {
-    const client = properties.client;
+    const client = props.client;
     let call = client.GetProduceSolutionResults(
       getProduceSolutionResultsRequest
     );
@@ -132,10 +133,10 @@ function getProduceSolutionResults(
         if (!solution.fit.outputCsv.trim()) {
           console.log(
             "WARNING: solution " +
-              solution.solutionID +
+              solution_id +
               " has not output file; removing from results set"
           );
-          sessionVar.solutions.delete(solution.solutionID);
+          solutions.delete(solution_id);
         }
         // console.log("solution.fit.outputCsv", solution.fit.outputCsv);
       }

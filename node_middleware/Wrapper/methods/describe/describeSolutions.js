@@ -1,24 +1,26 @@
+const props = require("../../props");
 const describeSolution = require("./describeSolution.js");
 
 function describeSolutions(sessionVar) {
   console.log("describeSolutions called");
-  let solutions = Array.from(sessionVar.solutions.values());
+  let solutions = props.sessionVar.solutions;
+  let solution_ids = Array.from(solutions.keys());
 
   let chain = Promise.resolve();
-  for (let i = 0; i < solutions.length; i++) {
-    let solution = solutions[i];
-    chain = chain.then(solutionID => {
-      return describeSolution(solution);
+  solution_ids.forEach(id => {
+    chain = chain.then(() => {
+      return describeSolution(id);
     });
-  }
+  });
+
   return new Promise(function(fulfill, reject) {
     let _fulfill = fulfill;
     let _reject = reject;
     chain
-      .then(function(res) {
+      .then(() => {
         _fulfill(sessionVar);
       })
-      .catch(function(err) {
+      .catch(err => {
         _reject(err);
       });
   });

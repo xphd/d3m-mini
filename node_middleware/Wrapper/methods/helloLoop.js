@@ -2,8 +2,9 @@ const fs = require("fs");
 const fse = require("fs-extra");
 
 // import variables
-const properties = require("../properties");
-const proto = properties.proto;
+const props = require("../props");
+const proto = props.proto;
+const sessionVar = props.sessionVar;
 
 function helloLoop() {
   // Added by Alex, for the purpose of Pipeline Visulization
@@ -16,14 +17,14 @@ function helloLoop() {
   console.log("Create a new responses folder!!");
   fs.mkdirSync(pathPrefix);
 
-  return new Promise(function(fulfill, reject) {
+  let promise = new Promise(function(fulfill, reject) {
     let request = new proto.HelloRequest();
     let waiting = false;
-    setInterval(function() {
-      const sessionVar = properties.sessionVar;
+    setInterval(() => {
+      // let sessionVar = props.sessionVar;
       if (waiting || sessionVar.connected) return;
       waiting = true;
-      const client = properties.client;
+      let client = props.client;
       client.Hello(request, function(err, response) {
         if (err) {
           console.log("Error!Hello", err);
@@ -48,6 +49,7 @@ function helloLoop() {
       });
     }, 10000);
   });
+  return promise;
 }
 
 module.exports = helloLoop;

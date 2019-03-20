@@ -1,31 +1,32 @@
 const fs = require("fs");
-const appRoot = require("app-root-path");
-const evaluationConfig = require(appRoot + "/tufts_gt_wisc_configuration.json");
 
 // import variables
-const properties = require("../properties");
-const proto = properties.proto;
+const props = require("../../props");
+const proto = props.proto;
+
+const evaluationConfig = require(props.CONFIG_PATH);
+// const evaluationConfig = require(appRoot + "/tufts_gt_wisc_configuration.json");
 
 // import mappings
-const metric_mappings = require("../mappings/metric_mappings");
+const metric_mappings = require("../../mappings/metric_mappings");
 
 // import functions
-const getMappedType = require("../functions/getMappedType");
-const getProblemSchema = require("../functions/getProblemSchema");
-const handleImageUrl = require("../functions/handleImageUrl");
+const getMappedType = require("../../functions/getMappedType");
+const getProblemSchema = require("../../functions/getProblemSchema");
+const handleImageUrl = require("../../functions/handleImageUrl");
 
 const getScoreSolutionResults = require("./getScoreSolutionResults.js");
 
-function scoreSolution(solution) {
-  console.log("scoring solution with id", solution.solutionID);
-  let scoreSolutionRequest = new proto.ScoreSolutionRequest();
-  scoreSolutionRequest.setSolutionId(solution.solutionID);
+function scoreSolution(solution_id) {
+  console.log("scoring solution with id", solution_id);
+  let request = new proto.ScoreSolutionRequest();
+  request.setSolutionId(solution_id);
 
   let dataset_input = new proto.Value();
   dataset_input.setDatasetUri(
     "file://" + handleImageUrl(evaluationConfig.dataset_schema)
   );
-  scoreSolutionRequest.setInputs(dataset_input);
+  request.setInputs(dataset_input);
 
   const problemSchema = getProblemSchema();
 
@@ -38,7 +39,7 @@ function scoreSolution(solution) {
     newMetric.setMetric(mapped_metric);
     return newMetric;
   });
-  scoreSolutionRequest.setPerformanceMetrics(problemPerformanceMetrics);
+  request.setPerformanceMetrics(problemPerformanceMetrics);
 
   // TODO: the user stuff is actually all optional
   // let solutionRunUser = new proto.SolutionRunUser;
@@ -58,32 +59,30 @@ function scoreSolution(solution) {
   scoringConfiguration.setTrainTestRatio(0.8);
   // TODO: use holdout for now, but let users specify in the future
   // scoringConfiguration.setFolds(2);
-  scoreSolutionRequest.setConfiguration(scoringConfiguration);
+  request.setConfiguration(scoringConfiguration);
 
-  return new Promise(function(fulfill, reject) {
-    const client = properties.client;
-    client.scoreSolution(scoreSolutionRequest, function(
-      err,
-      scoreSolutionResponse
-    ) {
+  let promise = new Promise(function(fulfill, reject) {
+    let client = props.client;
+    client.scoreSolution(request, (err, response) => {
       if (err) {
         reject(err);
       } else {
-        let scoreRequestID = scoreSolutionResponse.request_id;
+        let scoreRequest_id = response.request_id;
 
         // Added by Alex, for the purpose of Pipeline Visulization
         let pathPrefix = "responses/scoreSolutionResponses/";
         // let pathMid = scoreRequestID;
-        let pathMid = solution.solutionID;
+        let pathMid = solution_id;
         let pathAffix = ".json";
         let path = pathPrefix + pathMid + pathAffix;
-        let responseStr = JSON.stringify(scoreSolutionResponse);
+        let responseStr = JSON.stringify(response);
         fs.writeFileSync(path, responseStr);
 
-        getScoreSolutionResults(solution, scoreRequestID, fulfill, reject);
+        getScoreSolutionResults(solution_id, scoreRequest_id, fulfill, reject);
       }
     });
   });
+  return promise;
 }
 
 module.exports = scoreSolution;

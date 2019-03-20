@@ -1,18 +1,19 @@
 const fs = require("fs");
 
+const props = require("../../props");
 const scoreSolution = require("./scoreSolution.js");
 
 function scoreSolutions(sessionVar) {
   // console.log("scoreSolutions called");
-  let solutions = Array.from(sessionVar.solutions.values());
+  let solutions = props.sessionVar.solutions;
+  let solution_ids = Array.from(solutions.keys());
 
   let chain = Promise.resolve();
-  for (let i = 0; i < solutions.length; i++) {
-    let solution = solutions[i];
-    chain = chain.then(solutionID => {
-      return scoreSolution(solution);
+  solution_ids.forEach(id => {
+    chain = chain.then(() => {
+      return scoreSolution(id);
     });
-  }
+  });
 
   // Added by Alex, for the purpose of Pipeline Visulization
   // onetime response
@@ -25,21 +26,21 @@ function scoreSolutions(sessionVar) {
     fs.mkdirSync(pathPrefix);
   }
 
-  return new Promise(function(fulfill, reject) {
+  let promise = new Promise(function(fulfill, reject) {
     let _fulfill = fulfill;
     chain
-      .then(function(res) {
-        for (let i = 0; i < solutions.length; i++) {
-          let solution = solutions[i];
+      .then(() => {
+        solution_ids.forEach(solution_id => {
+          let solution = solutions.get(solution_id);
           if (!solution.scores) {
             console.log(
               "WARNING: solution " +
-                solution.solutionID +
+                solution_id +
                 " has no scores; removing from results set"
             );
-            sessionVar.solutions.delete(solution.solutionID);
+            solutions.delete(solution_id);
           }
-        }
+        });
         _fulfill(sessionVar);
       })
       .catch(function(err) {
@@ -47,6 +48,7 @@ function scoreSolutions(sessionVar) {
         reject(err);
       });
   });
+  return promise;
 }
 
 module.exports = scoreSolutions;

@@ -1,5 +1,5 @@
-const properties = require("../properties");
-const proto = properties.proto;
+const props = require("../props");
+const proto = props.proto;
 
 const metric_mappings = {
   undefined: proto.PerformanceMetric.METRIC_UNDEFINED,

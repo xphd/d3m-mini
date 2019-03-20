@@ -1,19 +1,19 @@
 const fs = require("fs");
 
 // import variables
-const properties = require("../properties");
-const proto = properties.proto;
-const sessionVar = properties.sessionVar;
+const props = require("../props");
+const proto = props.proto;
+const sessionVar = props.sessionVar;
 
-function getDescriptions(solutionIDs_selected) {
+function getDescriptions(solution_ids_selected) {
   console.log("describeSolutions called");
   // let solutions = Array.from(sessionVar.solutions.values());
-  let solutionIDs = solutionIDs_selected;
+  let solution_ids = solution_ids_selected;
   let chain = Promise.resolve();
-  for (let i = 0; i < solutionIDs.length; i++) {
-    let solutionID = solutionIDs[i];
+  for (let i = 0; i < solution_ids.length; i++) {
+    let solution_id = solution_ids[i];
     chain = chain.then(() => {
-      return getDescription(solutionID);
+      return getDescription(solution_id);
     });
   }
   return new Promise(function(fulfill, reject) {
@@ -29,8 +29,8 @@ function getDescriptions(solutionIDs_selected) {
   });
 }
 
-function getDescription(solutionID) {
-  let solution = properties.sessionVar.solutions.get(solutionID);
+function getDescription(solution_id) {
+  let solution = props.sessionVar.solutions.get(solution_id);
 
   // doing the shortcut now and see how far this takes us
   console.log("WARNING: TAKING THE DESCRIBE-SOLUTION SHORTCUT FOR NOW");
@@ -39,9 +39,9 @@ function getDescription(solutionID) {
     fulfill(solution);
   });
   // THIS DOES NOT GET EXECUTED FOR NOW
-  console.log("request describe solution with id", solutionID);
+  console.log("request describe solution with id", solution_id);
   let describeSolutionRequest = new proto.DescribeSolutionRequest();
-  describeSolutionRequest.setSolutionId(solutionID);
+  describeSolutionRequest.setSolutionId(solution_id);
 
   // Added by Alex, for the purpose of Pipeline Visulization
   let pathPrefix = "responses/describeSolutionResponses/";
@@ -50,7 +50,7 @@ function getDescription(solutionID) {
   }
 
   return new Promise(function(fulfill, reject) {
-    const client = properties.client;
+    let client = props.client;
 
     client.describeSolution(describeSolutionRequest, function(
       err,
@@ -65,14 +65,14 @@ function getDescription(solutionID) {
         let outputs = pipeline.outputs;
         console.log(outputs);
         let finalOutput = outputs[outputs.length - 1].data;
-        console.log("selecting final output for ", solutionID, finalOutput);
+        console.log("selecting final output for ", solution_id, finalOutput);
 
         solution.finalOutput = finalOutput;
         fulfill(solution);
 
         // Added by Alex, for the purpose of Pipeline Visulization
         let pathPrefix = "responses/describeSolutionResponses/";
-        let pathMid = solutionID;
+        let pathMid = solution_id;
         let pathAffix = ".json";
         let path = pathPrefix + pathMid + pathAffix;
         let responseStr = JSON.stringify(describeSolutionResponse);

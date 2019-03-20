@@ -3,13 +3,13 @@ const appRoot = require("app-root-path");
 const evaluationConfig = require(appRoot + "/tufts_gt_wisc_configuration.json");
 
 // import variables
-const properties = require("../properties");
-const proto = properties.proto;
+const props = require("../props");
+const proto = props.proto;
 
 // import functions
 const handleImageUrl = require("../functions/handleImageUrl.js");
 
-function getFitSolutions(solutionIDs_selected) {
+function getFitSolutions(solution_ids_selected) {
   console.log("fitSolutions called");
 
   // Added by Alex, for the purpose of Pipeline Visulization
@@ -23,17 +23,12 @@ function getFitSolutions(solutionIDs_selected) {
   }
 
   let chain = Promise.resolve();
-  solutionIDs_selected.forEach(solutionID => {
+  solution_ids_selected.forEach(id => {
     chain = chain.then(() => {
-      return getFitSolution(solutionID);
+      return getFitSolution(id);
     });
   });
-  // for (let i = 0; i < solutionIDs_selected.length; i++) {
-  //   let solution = solutions[i];
-  //   chain = chain.then(solutionID => {
-  //     return getFitSolution(solution);
-  //   });
-  // }
+
   return new Promise(function(fulfill, reject) {
     chain
       .then(function(res) {
@@ -47,11 +42,11 @@ function getFitSolutions(solutionIDs_selected) {
   });
 }
 
-function getFitSolution(solutionID) {
+function getFitSolution(solution_id) {
   // TODO: fix function
   let fitSolutionRequest = new proto.FitSolutionRequest();
-  let solution = properties.sessionVar.solutions.get(solutionID);
-  fitSolutionRequest.setSolutionId(solutionID);
+  let solution = properties.sessionVar.solutions.get(solution_id);
+  fitSolutionRequest.setSolutionId(solution_id);
   var dataset_input = new proto.Value();
   dataset_input.setDatasetUri(
     "file://" + handleImageUrl(evaluationConfig.dataset_schema)
@@ -73,7 +68,7 @@ function getFitSolution(solutionID) {
 
         // Added by Alex, for the purpose of Pipeline Visulization
         let pathPrefix = "responses/fitSolutionResponses/";
-        let pathMid = solutionID;
+        let pathMid = solution_id;
         let pathAffix = ".json";
         let path = pathPrefix + pathMid + pathAffix;
         let responseStr = JSON.stringify(fitSolutionResponse);
@@ -112,7 +107,7 @@ function getFitSolutionResults(
 
         // Added by Alex, for the purpose of Pipeline Visulization
         let pathPrefix = "responses/getFitSolutionResultsResponses/";
-        let pathMid = solution.solutionID;
+        let pathMid = solution.solution_id;
         let pathAffix = ".json";
         let path = pathPrefix + pathMid + pathAffix;
         let responseStr = JSON.stringify(getFitSolutionResultsResponse);

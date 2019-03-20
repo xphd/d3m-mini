@@ -1,20 +1,19 @@
-const grpc = require("grpc");
-
 // import all methods
 const helloLoop = require("./methods/helloLoop");
-const searchSolutions = require("./methods/searchSolutions");
-const fitSolutions = require("./methods/fitSolutions");
-const produceSolutions = require("./methods/produceSolutions");
-const scoreSolutions = require("./methods/scoreSolutions");
-const exportFittedSolution = require("./methods/exportFittedSolution");
 const endSearchSolutions = require("./methods/endSearchSolutions");
-const describeSolutions = require("./methods/describeSolutions");
-
 const listPrimitives = require("./methods/listPrimitives");
 
-const problemSetSerachSolutionRequest = require("./problemSetSerachSolutionRequest");
+const searchSolutions = require("./methods/search/searchSolutions");
+const fitSolutions = require("./methods/fit/fitSolutions");
+const produceSolutions = require("./methods/produce/produceSolutions");
+const scoreSolutions = require("./methods/score/scoreSolutions");
+const describeSolutions = require("./methods/describe/describeSolutions");
+const exportFittedSolution = require("./methods/export/exportFittedSolution");
 
-const properties = require("./properties");
+const problemSetSerachSolutionRequest = require("./problemSetSerachSolutionRequest");
+const connect = require("./connect");
+
+const props = require("./props");
 
 const exportSolutions = require("./methods_molecule/exportSolutions");
 const getAllSolutions = require("./methods_molecule/getAllSolutions");
@@ -23,7 +22,7 @@ const getScores = require("./methods_molecule/getScores");
 const getFitSolutions = require("./methods_molecule/getFitSolutions");
 const getProduceSolutions = require("./methods_molecule/getProduceSolutions");
 
-exports.sessionVar = properties.sessionVar;
+exports.sessionVar = props.sessionVar;
 
 // the chain
 exports.helloLoop = helloLoop;
@@ -37,21 +36,16 @@ exports.describeSolutions = describeSolutions;
 
 exports.listPrimitives = listPrimitives;
 
-exports.problemSetSerachSolutionRequest = problemSetSerachSolutionRequest;
-
 exports.exportSolutions = exportSolutions;
 exports.getAllSolutions = getAllSolutions;
 exports.getDescriptions = getDescriptions;
 exports.getScores = getScores;
 exports.getFitSolutions = getFitSolutions;
 exports.getProduceSolutions = getProduceSolutions;
-exports.connect = function(ta2_url) {
-  console.log("Connect to:" + ta2_url);
-  let proto = properties.proto;
-  let client = new proto.Core(ta2_url, grpc.credentials.createInsecure());
-  properties.client = client;
-};
+
+exports.problemSetSerachSolutionRequest = problemSetSerachSolutionRequest;
+exports.connect = connect;
 
 exports.setEvaluationConfig = function(evaluationConfig) {
-  properties.evaluationConfig = evaluationConfig;
+  props.evaluationConfig = evaluationConfig;
 };

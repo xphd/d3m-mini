@@ -1,20 +1,19 @@
 const fs = require("fs");
 
 // import variables
-const properties = require("../properties");
-const proto = properties.proto;
-const sessionVar = properties.sessionVar;
+const props = require("../props");
+const proto = props.proto;
 
-exportSolutions = function(solutionID, rankStr) {
-  console.log("export fitted solution", solutionID);
+function exportSolutions(solution_id, rankStr) {
+  console.log("export fitted solution", solution_id);
   // let rank = sessionVar.rankVar;
   // sessionVar.rankVar = sessionVar.rankVar - 0.00000001;
   let rank = parseFloat(rankStr);
   let solutionExportRequest = new proto.SolutionExportRequest();
-  solutionExportRequest.setSolutionId(solutionID);
+  solutionExportRequest.setSolutionId(solution_id);
   solutionExportRequest.setRank(rank);
   console.log("solutionExportRequest", solutionExportRequest);
-  const client = properties.client;
+  let client = props.client;
   client.solutionExport(solutionExportRequest, function(
     solutionExportResponse
   ) {
@@ -26,6 +25,6 @@ exportSolutions = function(solutionID, rankStr) {
     let responseStr = JSON.stringify(solutionExportResponse);
     fs.writeFileSync(path, responseStr);
   });
-};
+}
 
 module.exports = exportSolutions;

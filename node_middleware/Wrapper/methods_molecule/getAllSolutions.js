@@ -1,9 +1,9 @@
 // import variables
-const properties = require("../properties");
+const props = require("../props");
 
 function getAllSolutions() {
-  let solutions = properties.sessionVar.solutions; 
-  return solutions
+  let solutions = props.sessionVar.solutions;
+  return solutions;
 }
 
 module.exports = getAllSolutions;

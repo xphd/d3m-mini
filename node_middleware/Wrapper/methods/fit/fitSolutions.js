@@ -1,5 +1,6 @@
 const fs = require("fs");
 
+const props = require("../../props");
 const fitSolution = require("./fitSolution.js");
 
 function fitSolutions(sessionVar) {
@@ -14,27 +15,28 @@ function fitSolutions(sessionVar) {
   if (!fs.existsSync(pathPrefix)) {
     fs.mkdirSync(pathPrefix);
   }
-
-  let solutions = Array.from(sessionVar.solutions.values());
+  let solutions = props.sessionVar.solutions;
+  let solution_ids = Array.from(solutions.keys());
 
   let chain = Promise.resolve();
-  for (let i = 0; i < solutions.length; i++) {
-    let solution = solutions[i];
-    chain = chain.then(solutionID => {
-      return fitSolution(solution, sessionVar);
+  solution_ids.forEach(id => {
+    chain = chain.then(() => {
+      return fitSolution(id);
     });
-  }
-  return new Promise(function(fulfill, reject) {
+  });
+
+  let promise = new Promise((fulfill, reject) => {
     chain
-      .then(function(res) {
+      .then(() => {
         // console.log("RES", res);
         fulfill(sessionVar);
       })
-      .catch(function(err) {
+      .catch(err => {
         // console.log("ERR", err);
         reject(err);
       });
   });
+  return promise;
 }
 
 module.exports = fitSolutions;
