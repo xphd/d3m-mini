@@ -12,9 +12,8 @@ const evaluationConfig = require(CONFIG_PATH);
 
 const getFitSolutionResults = require("./getFitSolutionResults.js");
 
-function fitSolution(solution_id) {
-  let solutions = props.sessionVar.solutions;
-  let solution = solutions.get(solution_id);
+function fitSolution(solution) {
+  let solution_id = solution.solution_id;
   // TODO: fix function
   let request = new proto.FitSolutionRequest();
   request.setSolutionId(solution_id);
@@ -34,7 +33,7 @@ function fitSolution(solution_id) {
         reject(err);
       } else {
         let request_id = response.request_id;
-        getFitSolutionResults(solution_id, request_id, fulfill, reject);
+        getFitSolutionResults(solution, request_id, fulfill, reject);
 
         // Added by Alex, for the purpose of Pipeline Visulization
         let pathPrefix = "responses/fitSolutionResponses/";

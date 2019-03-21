@@ -17,7 +17,7 @@ function getSearchSolutionsResults(sessionVar, fulfill, reject) {
     fs.mkdirSync(pathPrefix);
   }
 
-  let promise = new Promise(function(fulfill, reject) {
+  let promise = new Promise((fulfill, reject) => {
     console.log("starting get search solution results call");
     // if (sessionVar.ta2Ident.user_agent.startsWith("nyu_ta2")) {
     //   let timeBoundInMinutes = 1;
@@ -32,7 +32,7 @@ function getSearchSolutionsResults(sessionVar, fulfill, reject) {
     // }
     let client = props.client;
     let call = client.getSearchSolutionsResults(request);
-    call.on("data", function(response) {
+    call.on("data", response => {
       // console.log("searchSolutionResponse", getSearchSolutionsResultsResponse);
       // ta2s so not seem to send COMPLETED
       // if (getSearchSolutionsResultsResponse.progress.state === "COMPLETED") {
@@ -45,7 +45,8 @@ function getSearchSolutionsResults(sessionVar, fulfill, reject) {
       //      (getSearchSolutionsResultsResponse.internal_score)) {
       if (solution_id) {
         // let solution = { solution_id: solution_id, scores: {} };
-        sessionVar.solutions.set(solution_id, {});
+        let solution = { solution_id: solution_id };
+        sessionVar.solutions.set(solution_id, solution);
 
         // console.log(sessionVar.solutions)
 
@@ -56,9 +57,9 @@ function getSearchSolutionsResults(sessionVar, fulfill, reject) {
         let path = pathPrefix + pathMid + pathAffix;
         let responseStr = JSON.stringify(response);
         fs.writeFileSync(path, responseStr);
-        let id = solution_id;
+
         let index = Array.from(sessionVar.solutions.values()).length;
-        console.log("new solution:", index, id);
+        console.log("new solution:", index, solution_id);
         // );
       } else {
         console.log("ignoring empty solution id");

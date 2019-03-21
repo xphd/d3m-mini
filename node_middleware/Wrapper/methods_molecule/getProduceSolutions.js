@@ -33,17 +33,18 @@ function getProduceSolutions(solution_ids_selected) {
     fs.mkdirSync(pathPrefix);
   }
 
-  return new Promise(function(fulfill, reject) {
+  let promise = new Promise((fulfill, reject) => {
     chain
-      .then(function(res) {
+      .then(res => {
         console.log("produce solutions RES", res);
         fulfill();
       })
-      .catch(function(err) {
+      .catch(err => {
         // console.log("produce solutions ERR", err);
         reject(err);
       });
   });
+  return promise;
 }
 
 function getProduceSolution(solution_id) {
@@ -65,60 +66,51 @@ function getProduceSolution(solution_id) {
   produceSolutionRequest.setExposeValueTypes([proto.ValueType.CSV_URI]);
   // leaving empty: repeated SolutionRunUser users = 5;
 
-  return new Promise(function(fulfill, reject) {
+  let promise = new Promise((fulfill, reject) => {
     const client = props.client;
-    client.produceSolution(produceSolutionRequest, function(
-      err,
-      produceSolutionResponse
-    ) {
-      if (err) {
-        reject(err);
-      } else {
-        let produceSolutionRequestID = produceSolutionResponse.request_id;
-        getProduceSolutionResults(
-          solution_id,
-          produceSolutionRequestID,
-          fulfill,
-          reject
-        );
+    client.produceSolution(
+      produceSolutionRequest,
+      (err, produceSolutionResponse) => {
+        if (err) {
+          reject(err);
+        } else {
+          let request_id = produceSolutionResponse.request_id;
+          getProduceSolutionResults(solution_id, request_id, fulfill, reject);
 
-        // Added by Alex, for the purpose of Pipeline Visulization
-        let pathPrefix = "responses/produceSolutionResponses/";
-        // let pathMid = produceSolutionRequestID;
-        let pathMid = solution_id;
-        let pathAffix = ".json";
-        let path = pathPrefix + pathMid + pathAffix;
-        let responseStr = JSON.stringify(produceSolutionResponse);
-        fs.writeFileSync(path, responseStr);
+          // Added by Alex, for the purpose of Pipeline Visulization
+          let pathPrefix = "responses/produceSolutionResponses/";
+          // let pathMid = produceSolutionRequestID;
+          let pathMid = solution_id;
+          let pathAffix = ".json";
+          let path = pathPrefix + pathMid + pathAffix;
+          let responseStr = JSON.stringify(produceSolutionResponse);
+          fs.writeFileSync(path, responseStr);
+        }
       }
-    });
+    );
   });
+  return promise;
 }
 
-function getProduceSolutionResults(
-  solution_id,
-  produceSolutionRequestID,
-  fulfill,
-  reject
-) {
+function getProduceSolutionResults(solution_id, request_id, fulfill, reject) {
   let solutions = props.sessionVar.solutions;
-  let solution = olutions.get(solution_id);
+  let solution = solutions.get(solution_id);
   // console.log("get produce solution called");
   let _fulfill = fulfill;
   let _reject = reject;
   let getProduceSolutionResultsRequest = new proto.GetProduceSolutionResultsRequest();
-  getProduceSolutionResultsRequest.setRequestId(produceSolutionRequestID);
+  getProduceSolutionResultsRequest.setRequestId(request_id);
 
-  return new Promise(function(fulfill, reject) {
+  let promise = new Promise((fulfill, reject) => {
     const client = props.client;
     let call = client.GetProduceSolutionResults(
       getProduceSolutionResultsRequest
     );
-    call.on("data", function(getProduceSolutionResultsResponse) {
-      // console.log("getProduceSolutionResultsResponse", getProduceSolutionResultsResponse);
-      if (getProduceSolutionResultsResponse.progress.state === "COMPLETED") {
+    call.on("data", response => {
+      // console.log("getProduceSolutionResultsResponse", request_id);
+      if (request_id.progress.state === "COMPLETED") {
         // fitting solution is finished
-        let exposedOutputs = getProduceSolutionResultsResponse.exposed_outputs;
+        let exposedOutputs = request_id.exposed_outputs;
         // console.log("PRODUCE SOLUTION COMPLETED", produceSolutionResponseID);
         // console.log("EXPOSED OUTPUTS", exposedOutputs);
         let steps = Object.keys(exposedOutputs);
@@ -143,22 +135,23 @@ function getProduceSolutionResults(
 
       // Added by Alex, for the purpose of Pipeline Visulization
       let pathPrefix = "responses/getProduceSolutionResultsResponses/";
-      let pathMid = produceSolutionRequestID;
+      let pathMid = request_id;
       let pathAffix = ".json";
       let path = pathPrefix + pathMid + pathAffix;
-      let responseStr = JSON.stringify(getProduceSolutionResultsResponse);
+      let responseStr = JSON.stringify(request_id);
       fs.writeFileSync(path, responseStr);
     });
-    call.on("error", function(err) {
-      console.log("Error!getProduceSolutionResults", produceSolutionRequestID);
+    call.on("error", err => {
+      console.log("Error!getProduceSolutionResults", request_id);
       _reject(err);
     });
-    call.on("end", function(err) {
-      console.log("End of produce solution results", produceSolutionRequestID);
+    call.on("end", err => {
+      console.log("End of produce solution results", request_id);
       if (err) console.log("err is ", err);
-      _fulfill(produceSolutionRequestID);
+      _fulfill(request_id);
     });
   });
+  return promise;
 }
 
 module.exports = getProduceSolutions;

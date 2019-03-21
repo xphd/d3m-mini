@@ -4,16 +4,17 @@ const props = require("../../props");
 const produceSolution = require("./produceSolution.js");
 
 function produceSolutions(sessionVar) {
-  let solutions = props.sessionVar.solutions;
-  let solution_ids = Array.from(solutions.keys());
+  let solutions = Array.from(props.sessionVar.solutions.values());
   let chain = Promise.resolve();
-  solution_ids.forEach(id => {
-    chain = chain.then(() => {
-      let solution = solutions.get(id);
-      if (solution.fit != null) {
-        return produceSolution(id);
-      }
-    });
+  solutions.forEach(solution => {
+    console.log("produceSolutions", solution);
+    if (solution.fit) {
+      chain = chain.then(() => {
+        return produceSolution(solution);
+      });
+    } else {
+      console.log("No produce:", solution.solution_id);
+    }
   });
 
   // Added by Alex, for the purpose of Pipeline Visulization

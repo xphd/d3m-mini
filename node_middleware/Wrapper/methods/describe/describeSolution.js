@@ -4,14 +4,15 @@ const fs = require("fs");
 const props = require("../../props");
 const proto = props.proto;
 
-function describeSolution(solution_id) {
+function describeSolution(solution) {
   // doing the shortcut now and see how far this takes us
-  // console.log("WARNING: TAKING THE DESCRIBE-SOLUTION SHORTCUT FOR NOW");
-  // return new Promise(function(fulfill, reject) {
-  //   solution.finalOutput = "outputs.0";
-  //   fulfill(solution);
-  // });
+  console.log("WARNING: TAKING THE DESCRIBE-SOLUTION SHORTCUT FOR NOW");
+  return new Promise(function(fulfill, reject) {
+    solution.finalOutput = "outputs.0";
+    fulfill(solution);
+  });
   // THIS DOES NOT GET EXECUTED FOR NOW
+  let solution_id = solution.solution_id;
   console.log("request describe solution with id", solution_id);
   let request = new proto.DescribeSolutionRequest();
   request.setSolutionId(solution_id);
@@ -22,9 +23,9 @@ function describeSolution(solution_id) {
     fs.mkdirSync(pathPrefix);
   }
 
-  let promise = new Promise(function(fulfill, reject) {
+  let promise = new Promise((fulfill, reject) => {
     let client = props.client;
-    client.describeSolution(request, function(err, response) {
+    client.describeSolution(request, (err, response) => {
       if (err) {
         reject(err);
       } else {
@@ -35,8 +36,7 @@ function describeSolution(solution_id) {
         console.log(outputs);
         let finalOutput = outputs[outputs.length - 1].data;
         console.log("selecting final output for ", solution_id, finalOutput);
-        let solutions = props.sessionVar.solutions;
-        let solution = solutions.get(solution_id);
+
         solution.finalOutput = finalOutput;
         fulfill(solution);
 

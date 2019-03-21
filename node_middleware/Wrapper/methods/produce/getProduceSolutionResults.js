@@ -4,8 +4,9 @@ const fs = require("fs");
 const props = require("../../props");
 const proto = props.proto;
 
-function getProduceSolutionResults(solution_id, request_id, fulfill, reject) {
+function getProduceSolutionResults(solution, request_id, fulfill, reject) {
   // console.log("get produce solution called");
+  let solution_id = solution.solution_id;
   let _fulfill = fulfill;
   let _reject = reject;
   let request = new proto.GetProduceSolutionResultsRequest();
@@ -16,7 +17,7 @@ function getProduceSolutionResults(solution_id, request_id, fulfill, reject) {
     console.log("GetProduceSolutionResultsRequest", request);
     let call = client.GetProduceSolutionResults(request);
     call.on("data", response => {
-      // console.log("getProduceSolutionResultsResponse", getProduceSolutionResultsResponse);
+      // console.log("getProduceSolutionResultsResponse", response);
       if (response.progress.state === "COMPLETED") {
         // fitting solution is finished
         let exposedOutputs = response.exposed_outputs;
@@ -27,7 +28,6 @@ function getProduceSolutionResults(solution_id, request_id, fulfill, reject) {
           console.log("EXPOSED OUTPUTS:", exposedOutputs);
           console.log("ONLY USING FIRST STEP OF", steps);
         }
-        let solution = props.sessionVar.solutions.get(solution_id);
         solution.fit.outputCsv = exposedOutputs[steps[0]]["csv_uri"].replace(
           "file://",
           ""

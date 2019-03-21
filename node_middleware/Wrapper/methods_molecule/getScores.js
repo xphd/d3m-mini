@@ -119,8 +119,9 @@ function getScoresResponse(solution_id, scoreRequestID, fulfill, reject) {
       values = values.map(thing => thing[thing.raw]);
       // console.log("METRICS", metrics);
       // console.log("VALUES", values);
-      // solution.scores = {};
+
       let solution = props.sessionVar.solutions.get(solution_id);
+      solution.scores = {};
       for (let i = 0; i < metrics.length; i++) {
         // solution.scores = { f1Macro: _.mean(values) };
         let metric = metrics[i];

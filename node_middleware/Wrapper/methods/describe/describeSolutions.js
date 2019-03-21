@@ -3,17 +3,17 @@ const describeSolution = require("./describeSolution.js");
 
 function describeSolutions(sessionVar) {
   console.log("describeSolutions called");
-  let solutions = props.sessionVar.solutions;
-  let solution_ids = Array.from(solutions.keys());
+  let solutions = Array.from(props.sessionVar.solutions.values());
+  // let solution_ids = Array.from(solutions.keys());
 
   let chain = Promise.resolve();
-  solution_ids.forEach(id => {
+  solutions.forEach(solution => {
     chain = chain.then(() => {
-      return describeSolution(id);
+      return describeSolution(solution);
     });
   });
 
-  return new Promise(function(fulfill, reject) {
+  let promise = new Promise((fulfill, reject) => {
     let _fulfill = fulfill;
     let _reject = reject;
     chain
@@ -24,6 +24,7 @@ function describeSolutions(sessionVar) {
         _reject(err);
       });
   });
+  return promise;
 }
 
 module.exports = describeSolutions;

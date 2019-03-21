@@ -5,13 +5,11 @@ const scoreSolution = require("./scoreSolution.js");
 
 function scoreSolutions(sessionVar) {
   // console.log("scoreSolutions called");
-  let solutions = props.sessionVar.solutions;
-  let solution_ids = Array.from(solutions.keys());
-
+  let solutions = Array.from(props.sessionVar.solutions.values());
   let chain = Promise.resolve();
-  solution_ids.forEach(id => {
+  solutions.forEach(solution => {
     chain = chain.then(() => {
-      return scoreSolution(id);
+      return scoreSolution(solution);
     });
   });
 
@@ -26,12 +24,12 @@ function scoreSolutions(sessionVar) {
     fs.mkdirSync(pathPrefix);
   }
 
-  let promise = new Promise(function(fulfill, reject) {
+  let promise = new Promise((fulfill, reject) => {
     let _fulfill = fulfill;
     chain
       .then(() => {
-        solution_ids.forEach(solution_id => {
-          let solution = solutions.get(solution_id);
+        solutions.forEach(solution => {
+          let solution_id = solution.solution_id;
           if (!solution.scores) {
             console.log(
               "WARNING: solution " +

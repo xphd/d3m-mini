@@ -11,10 +11,10 @@ const handleImageUrl = require("../../functions/handleImageUrl.js");
 
 const getProduceSolutionResults = require("./getProduceSolutionResults.js");
 
-function produceSolution(solution_id) {
+function produceSolution(solution) {
+  let solution_id = solution.solution_id;
   // console.log("produce solution called");
   let request = new proto.ProduceSolutionRequest();
-  let solution = props.sessionVar.solutions.get(solution_id);
   request.setFittedSolutionId(solution.fit.fit_id);
   let dataset_input = new proto.Value();
   dataset_input.setDatasetUri(
@@ -37,7 +37,7 @@ function produceSolution(solution_id) {
         reject(err);
       } else {
         let request_id = response.request_id;
-        getProduceSolutionResults(solution_id, request_id, fulfill, reject);
+        getProduceSolutionResults(solution, request_id, fulfill, reject);
 
         // Added by Alex, for the purpose of Pipeline Visulization
         let pathPrefix = "responses/produceSolutionResponses/";

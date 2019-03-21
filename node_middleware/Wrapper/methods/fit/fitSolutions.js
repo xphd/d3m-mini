@@ -5,6 +5,7 @@ const fitSolution = require("./fitSolution.js");
 
 function fitSolutions(sessionVar) {
   console.log("fitSolutions called");
+  let solutions = Array.from(props.sessionVar.solutions.values());
 
   // Added by Alex, for the purpose of Pipeline Visulization
   let pathPrefix = "responses/fitSolutionResponses/";
@@ -15,13 +16,11 @@ function fitSolutions(sessionVar) {
   if (!fs.existsSync(pathPrefix)) {
     fs.mkdirSync(pathPrefix);
   }
-  let solutions = props.sessionVar.solutions;
-  let solution_ids = Array.from(solutions.keys());
 
   let chain = Promise.resolve();
-  solution_ids.forEach(id => {
+  solutions.forEach(solution => {
     chain = chain.then(() => {
-      return fitSolution(id);
+      return fitSolution(solution);
     });
   });
 

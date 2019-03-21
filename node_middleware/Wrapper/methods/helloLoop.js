@@ -17,7 +17,7 @@ function helloLoop() {
   console.log("Create a new responses folder!!");
   fs.mkdirSync(pathPrefix);
 
-  let promise = new Promise(function(fulfill, reject) {
+  let promise = new Promise((fulfill, reject) => {
     let request = new proto.HelloRequest();
     let waiting = false;
     setInterval(() => {
@@ -25,7 +25,7 @@ function helloLoop() {
       if (waiting || sessionVar.connected) return;
       waiting = true;
       let client = props.client;
-      client.Hello(request, function(err, response) {
+      client.Hello(request, (err, response) => {
         if (err) {
           console.log("Error!Hello", err);
           sessionVar.connected = false;

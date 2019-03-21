@@ -17,7 +17,8 @@ const handleImageUrl = require("../../functions/handleImageUrl");
 
 const getScoreSolutionResults = require("./getScoreSolutionResults.js");
 
-function scoreSolution(solution_id) {
+function scoreSolution(solution) {
+  let solution_id = solution.solution_id;
   console.log("scoring solution with id", solution_id);
   let request = new proto.ScoreSolutionRequest();
   request.setSolutionId(solution_id);
@@ -61,7 +62,7 @@ function scoreSolution(solution_id) {
   // scoringConfiguration.setFolds(2);
   request.setConfiguration(scoringConfiguration);
 
-  let promise = new Promise(function(fulfill, reject) {
+  let promise = new Promise((fulfill, reject) => {
     let client = props.client;
     client.scoreSolution(request, (err, response) => {
       if (err) {
@@ -78,7 +79,7 @@ function scoreSolution(solution_id) {
         let responseStr = JSON.stringify(response);
         fs.writeFileSync(path, responseStr);
 
-        getScoreSolutionResults(solution_id, scoreRequest_id, fulfill, reject);
+        getScoreSolutionResults(solution, scoreRequest_id, fulfill, reject);
       }
     });
   });

@@ -45,7 +45,7 @@ function getFitSolutions(solution_ids_selected) {
 function getFitSolution(solution_id) {
   // TODO: fix function
   let fitSolutionRequest = new proto.FitSolutionRequest();
-  let solution = properties.sessionVar.solutions.get(solution_id);
+  let solution = props.sessionVar.solutions.get(solution_id);
   fitSolutionRequest.setSolutionId(solution_id);
   var dataset_input = new proto.Value();
   dataset_input.setDatasetUri(
@@ -58,7 +58,7 @@ function getFitSolution(solution_id) {
   fitSolutionRequest.setExposeValueTypes([proto.ValueType.CSV_URI]);
   // leave empty: repeated SolutionRunUser users = 5;
   return new Promise(function(fulfill, reject) {
-    const client = properties.client;
+    const client = props.client;
     client.fitSolution(fitSolutionRequest, function(err, fitSolutionResponse) {
       if (err) {
         reject(err);
@@ -90,18 +90,18 @@ function getFitSolutionResults(
   getFitSolutionResultsRequest.setRequestId(fitSolutionResponseID);
 
   return new Promise(function(fulfill, reject) {
-    const client = properties.client;
+    let client = props.client;
     let call = client.getFitSolutionResults(getFitSolutionResultsRequest);
     call.on("data", function(getFitSolutionResultsResponse) {
       // console.log("getfitSolutionResultsResponse", getFitSolutionResultsResponse);
       if (getFitSolutionResultsResponse.progress.state === "COMPLETED") {
         // fitting solution is finished
-        let fitID = getFitSolutionResultsResponse.fitted_solution_id;
+        let fit_id = getFitSolutionResultsResponse.fitted_solution_id;
         let exposedOutputs = getFitSolutionResultsResponse.exposed_outputs;
         // console.log("FITTED SOLUTION COMPLETED", fitID);
         // console.log("EXPOSED OUTPUTS", exposedOutputs);
         solution.fit = {
-          fitID: fitID,
+          fit_id: fit_id,
           exposedOutputs: exposedOutputs
         };
 

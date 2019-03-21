@@ -5,14 +5,9 @@ const _ = require("lodash");
 const props = require("../../props");
 const proto = props.proto;
 
-function getScoreSolutionResults(
-  solution_id,
-  scoreRequest_id,
-  fulfill,
-  reject
-) {
-  let solutions = props.sessionVar.solutions;
-  let solution = solutions.get(solution_id);
+function getScoreSolutionResults(solution, scoreRequest_id, fulfill, reject) {
+  // let solutions = props.sessionVar.solutions;
+  // let solution = solutions.get(solution_id);
   let _fulfill = fulfill;
   let _reject = reject;
   let request = new proto.GetScoreSolutionResultsRequest();
