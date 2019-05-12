@@ -1,7 +1,7 @@
 const grpc = require("grpc");
 const APP_ROOT_PATH = require("app-root-path");
 
-const VERSION = "2019.2.27"; // ta3-ta2-api version
+const VERSION = "2019.4.11"; // ta3-ta2-api version
 const CONFIG_FILENAME = "tufts_gt_wisc_configuration.json";
 const PROTO_PATH = APP_ROOT_PATH + "/lib/js/protos/v" + VERSION + "/core.proto";
 const CONFIG_PATH = APP_ROOT_PATH + "/" + CONFIG_FILENAME;

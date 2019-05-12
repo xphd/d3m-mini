@@ -15,12 +15,12 @@ const connect = require("./connect");
 
 const props = require("./props");
 
-// const exportSolutions = require("./methods_molecule/exportSolutions");
-// const getAllSolutions = require("./methods_molecule/getAllSolutions");
-// const getDescriptions = require("./methods_molecule/getDescriptions");
-// const getScores = require("./methods_molecule/getScores");
-// const getFitSolutions = require("./methods_molecule/getFitSolutions");
-// const getProduceSolutions = require("./methods_molecule/getProduceSolutions");
+const exportSolutions = require("./methods_molecule/exportSolutions");
+const getAllSolutions = require("./methods_molecule/getAllSolutions");
+const getDescriptions = require("./methods_molecule/getDescriptions");
+const getScores = require("./methods_molecule/getScores");
+const getFitSolutions = require("./methods_molecule/getFitSolutions");
+const getProduceSolutions = require("./methods_molecule/getProduceSolutions");
 
 exports.sessionVar = props.sessionVar;
 
@@ -36,12 +36,12 @@ exports.describeSolutions = describeSolutions;
 
 exports.listPrimitives = listPrimitives;
 
-// exports.exportSolutions = exportSolutions;
-// exports.getAllSolutions = getAllSolutions;
-// exports.getDescriptions = getDescriptions;
-// exports.getScores = getScores;
-// exports.getFitSolutions = getFitSolutions;
-// exports.getProduceSolutions = getProduceSolutions;
+exports.exportSolutions = exportSolutions;
+exports.getAllSolutions = getAllSolutions;
+exports.getDescriptions = getDescriptions;
+exports.getScores = getScores;
+exports.getFitSolutions = getFitSolutions;
+exports.getProduceSolutions = getProduceSolutions;
 
 exports.problemSetSerachSolutionRequest = problemSetSerachSolutionRequest;
 exports.connect = connect;

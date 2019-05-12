@@ -51,7 +51,15 @@ function getProduceSolution(solution_id) {
   // console.log("produce solution called");
   let solution = props.sessionVar.solutions.get(solution_id);
   let produceSolutionRequest = new proto.ProduceSolutionRequest();
-  produceSolutionRequest.setFittedSolutionId(solution_id);
+
+  console.log("solution_id is:", solution_id);
+
+  let fit_id = solution.fit.fit_id;
+  console.log("fit_id is", fit_id);
+
+  // produceSolutionRequest.setFittedSolutionId(solution_id);
+  produceSolutionRequest.setFittedSolutionId(fit_id);
+
   let dataset_input = new proto.Value();
   dataset_input.setDatasetUri(
     "file://" + handleImageUrl(evaluationConfig.dataset_schema)
@@ -108,9 +116,9 @@ function getProduceSolutionResults(solution_id, request_id, fulfill, reject) {
     );
     call.on("data", response => {
       // console.log("getProduceSolutionResultsResponse", request_id);
-      if (request_id.progress.state === "COMPLETED") {
+      if (response.progress.state === "COMPLETED") {
         // fitting solution is finished
-        let exposedOutputs = request_id.exposed_outputs;
+        let exposedOutputs = response.exposed_outputs;
         // console.log("PRODUCE SOLUTION COMPLETED", produceSolutionResponseID);
         // console.log("EXPOSED OUTPUTS", exposedOutputs);
         let steps = Object.keys(exposedOutputs);
@@ -121,7 +129,7 @@ function getProduceSolutionResults(solution_id, request_id, fulfill, reject) {
         solution.fit.outputCsv = exposedOutputs[steps[0]]["csv_uri"].replace(
           "file://",
           ""
-        );
+        );        
         if (!solution.fit.outputCsv.trim()) {
           console.log(
             "WARNING: solution " +
@@ -130,6 +138,7 @@ function getProduceSolutionResults(solution_id, request_id, fulfill, reject) {
           );
           solutions.delete(solution_id);
         }
+        console.log(solution);
         // console.log("solution.fit.outputCsv", solution.fit.outputCsv);
       }
 

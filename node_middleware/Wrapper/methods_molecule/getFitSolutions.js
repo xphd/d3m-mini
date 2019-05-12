@@ -105,6 +105,8 @@ function getFitSolutionResults(
           exposedOutputs: exposedOutputs
         };
 
+        console.log("solution is: ",solution)
+
         // Added by Alex, for the purpose of Pipeline Visulization
         let pathPrefix = "responses/getFitSolutionResultsResponses/";
         let pathMid = solution.solution_id;

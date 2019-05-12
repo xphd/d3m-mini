@@ -39,6 +39,8 @@ function getSearchSolutionsResults(sessionVar, fulfill, reject) {
 
       // console.log("DATA CALL", getSearchSolutionsResultsResponse);
 
+      console.log(response.progress.state);
+      console.log(response.progress.status);
       let solution_id = response.solution_id;
       // if ( (!sessionVar.ta2Ident.user_agent.startsWith("nyu_ta2")) ||
       // ignore of internal_score is NaN or 0 for nyu

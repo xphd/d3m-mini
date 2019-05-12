@@ -41,20 +41,22 @@ function searchSolutions(sessionVar) {
     msg = "non-nyu ta2 detected; timeBound for searching to " + timeBound;
   }
   console.log(msg);
-  request.setTimeBound(timeBound);
+  request.setTimeBoundSearch(timeBound);
   request.setAllowedValueTypes(allowed_val_types);
 
   var problem_desc = new proto.ProblemDescription();
   var problem = new proto.Problem();
-  problem.setId(problemSchema.about.problemID);
+
+  problem_desc.setId(problemSchema.about.problemID);
   if (!problemSchema.about.problemVersion) {
     console.log("problem version not set, setting default value 1.0");
-    problem.setVersion("1.0");
+    problem_desc.setVersion("1.0");
   } else {
-    problem.setVersion(problemSchema.about.problemVersion);
+    problem_desc.setVersion(problemSchema.about.problemVersion);
   }
-  problem.setName(problemSchema.about.problemName);
-  problem.setDescription(problemSchema.about.problemDescription + "");
+  problem_desc.setName(problemSchema.about.problemName);
+  problem_desc.setDescription(problemSchema.about.problemDescription + "");
+
   problem.setTaskType(
     getMappedType(task_type_mappings, problemSchema.about.taskType)
   );
