@@ -1,7 +1,11 @@
+("use strict");
+
+// const TA2PORT = "localhost:50054"; // UCB
+const TA2PORT = "localhost:50055"; // ISI
+
 // This backend is used to work with vue frontend
 // it reads files in the folder of "responses" and send wanted infors to frontend
 
-"use strict";
 const http = require("http");
 const express = require("express");
 const socketIO = require("socket.io");
@@ -12,7 +16,6 @@ const app = express();
 const server = http.createServer(app);
 const serverSocket = socketIO(server, { origins: "*:*" });
 
-const TA2PORT = "localhost:50054";
 const PORT = 9090;
 server.listen(PORT);
 console.log("Server listening " + PORT);

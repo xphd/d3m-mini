@@ -50,9 +50,9 @@ function getSearchSolutionsResults(sessionVar, fulfill, reject) {
 
       // console.log("DATA CALL", getSearchSolutionsResultsResponse);
 
-      console.log(">===>")
-      console.log(response)
-      console.log("<===<")
+      console.log(">===>");
+      console.log(response);
+      console.log("<===<");
 
       let state = response.progress.state;
       // console.log("state:",state);
