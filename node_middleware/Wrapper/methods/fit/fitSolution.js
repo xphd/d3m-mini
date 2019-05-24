@@ -25,10 +25,20 @@ function fitSolution(solution) {
   request.setExposeOutputs(solution.finalOutput);
   request.setExposeValueTypes([proto.ValueType.CSV_URI]);
   // leave empty: repeated SolutionRunUser users = 5;
-  return new Promise(function(fulfill, reject) {
+
+  // store request
+  if (props.isRequest) {
+    let requestStr = JSON.stringify(request);
+    let path =
+      props.REQUESTS_PATH + "fitSolutionRequests/" + solution_id + ".json";
+    fs.writeFileSync(path, requestStr);
+  }
+  //
+  return new Promise((fulfill, reject) => {
     let client = props.client;
-    console.log(request);
-    client.fitSolution(request, function(err, response) {
+    // console.log("fitSolutionRequest:")
+    // console.log(request);
+    client.fitSolution(request, (err, response) => {
       if (err) {
         reject(err);
       } else {
@@ -36,12 +46,14 @@ function fitSolution(solution) {
         getFitSolutionResults(solution, request_id, fulfill, reject);
 
         // Added by Alex, for the purpose of Pipeline Visulization
-        let pathPrefix = "responses/fitSolutionResponses/";
-        let pathMid = solution_id;
-        let pathAffix = ".json";
-        let path = pathPrefix + pathMid + pathAffix;
-        let responseStr = JSON.stringify(response);
-        fs.writeFileSync(path, responseStr);
+        if (props.isResponse) {
+          let pathPrefix = props.RESPONSES_PATH + "fitSolutionResponses/";
+          let pathMid = solution_id;
+          let pathAffix = ".json";
+          let path = pathPrefix + pathMid + pathAffix;
+          let responseStr = JSON.stringify(response);
+          fs.writeFileSync(path, responseStr);
+        }
       }
     });
   });

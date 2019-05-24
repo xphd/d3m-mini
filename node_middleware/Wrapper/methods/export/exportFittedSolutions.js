@@ -16,9 +16,6 @@ function exportFittedSolutions(sessionVar) {
         return exportFittedSolution(solution);
       });
     }
-    chain = chain.then(() => {
-      return produceSolution(solution);
-    });
   });
 
   let promise = new Promise((fulfill, reject) => {

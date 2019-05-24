@@ -12,16 +12,29 @@ function scoreSolutions(sessionVar) {
       return scoreSolution(solution);
     });
   });
-
-  // Added by Alex, for the purpose of Pipeline Visulization
-  // onetime response
-  let pathPrefix = "responses/scoreSolutionResponses/";
-  if (!fs.existsSync(pathPrefix)) {
-    fs.mkdirSync(pathPrefix);
+  
+  if (props.isResponse) {
+    // onetime response
+    let pathPrefix = props.RESPONSES_PATH + "scoreSolutionResponses/";
+    if (!fs.existsSync(pathPrefix)) {
+      fs.mkdirSync(pathPrefix);
+    }
+    pathPrefix = props.RESPONSES_PATH + "getScoreSolutionResultsResponses/";
+    if (!fs.existsSync(pathPrefix)) {
+      fs.mkdirSync(pathPrefix);
+    }
   }
-  pathPrefix = "responses/getScoreSolutionResultsResponses/";
-  if (!fs.existsSync(pathPrefix)) {
-    fs.mkdirSync(pathPrefix);
+
+  if (props.isRequest) {
+    // onetime response
+    let pathPrefix = props.REQUESTS_PATH + "scoreSolutionRequests/";
+    if (!fs.existsSync(pathPrefix)) {
+      fs.mkdirSync(pathPrefix);
+    }
+    pathPrefix = props.REQUESTS_PATH + "getScoreSolutionResultsRequests/";
+    if (!fs.existsSync(pathPrefix)) {
+      fs.mkdirSync(pathPrefix);
+    }
   }
 
   let promise = new Promise((fulfill, reject) => {
@@ -36,7 +49,7 @@ function scoreSolutions(sessionVar) {
                 solution_id +
                 " has no scores; removing from results set"
             );
-            solutions.delete(solution_id);
+            props.sessionVar.solutions.delete(solution_id);
           }
         });
         _fulfill(sessionVar);

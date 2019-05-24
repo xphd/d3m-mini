@@ -7,22 +7,36 @@ function fitSolutions(sessionVar) {
   console.log("fitSolutions called");
   let solutions = Array.from(props.sessionVar.solutions.values());
 
-  // Added by Alex, for the purpose of Pipeline Visulization
-  let pathPrefix = "responses/fitSolutionResponses/";
-  if (!fs.existsSync(pathPrefix)) {
-    fs.mkdirSync(pathPrefix);
-  }
-  pathPrefix = "responses/getFitSolutionResultsResponses/";
-  if (!fs.existsSync(pathPrefix)) {
-    fs.mkdirSync(pathPrefix);
-  }
-
   let chain = Promise.resolve();
   solutions.forEach(solution => {
     chain = chain.then(() => {
       return fitSolution(solution);
     });
   });
+
+  // Added by Alex, for the purpose of Pipeline Visulization
+  if (props.isResponse) {
+    let pathPrefix = props.RESPONSES_PATH + "fitSolutionResponses/";
+    if (!fs.existsSync(pathPrefix)) {
+      fs.mkdirSync(pathPrefix);
+    }
+    pathPrefix = props.RESPONSES_PATH + "getFitSolutionResultsResponses/";
+    if (!fs.existsSync(pathPrefix)) {
+      fs.mkdirSync(pathPrefix);
+    }
+  }
+
+  if (props.isRequest) {
+    // onetime response
+    let pathPrefix = props.REQUESTS_PATH + "fitSolutionRequests/";
+    if (!fs.existsSync(pathPrefix)) {
+      fs.mkdirSync(pathPrefix);
+    }
+    pathPrefix = props.REQUESTS_PATH + "getFitSolutionResultsRequests/";
+    if (!fs.existsSync(pathPrefix)) {
+      fs.mkdirSync(pathPrefix);
+    }
+  }
 
   let promise = new Promise((fulfill, reject) => {
     chain

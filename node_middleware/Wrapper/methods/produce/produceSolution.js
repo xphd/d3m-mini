@@ -29,9 +29,17 @@ function produceSolution(solution) {
   request.setExposeValueTypes([proto.ValueType.CSV_URI]);
   // leaving empty: repeated SolutionRunUser users = 5;
 
+  // store request
+  if (props.isRequest) {
+    let requestStr = JSON.stringify(request);
+    let path = props.REQUESTS_PATH +"produceSolutionRequests/"+ solution_id+".json";
+    fs.writeFileSync(path, requestStr);
+  }
+  //
+
   let promise = new Promise((fulfill, reject) => {
     let client = props.client;
-    console.log("produceSolutionRequest", request);
+    // console.log("produceSolutionRequest", request);
     client.produceSolution(request, (err, response) => {
       if (err) {
         reject(err);
@@ -40,13 +48,15 @@ function produceSolution(solution) {
         getProduceSolutionResults(solution, request_id, fulfill, reject);
 
         // Added by Alex, for the purpose of Pipeline Visulization
-        let pathPrefix = "responses/produceSolutionResponses/";
-        // let pathMid = produceSolutionRequestID;
-        let pathMid = solution_id;
-        let pathAffix = ".json";
-        let path = pathPrefix + pathMid + pathAffix;
-        let responseStr = JSON.stringify(response);
-        fs.writeFileSync(path, responseStr);
+        if (props.isResponse) {
+          let pathPrefix = props.RESPONSES_PATH + "produceSolutionResponses/";
+          // let pathMid = produceSolutionRequestID;
+          let pathMid = solution_id;
+          let pathAffix = ".json";
+          let path = pathPrefix + pathMid + pathAffix;
+          let responseStr = JSON.stringify(response);
+          fs.writeFileSync(path, responseStr);
+        }
       }
     });
   });

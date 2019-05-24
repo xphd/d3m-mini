@@ -38,7 +38,7 @@ export default {
     return {
       solutionIDs: [],
       solutionIDs_selected: [],
-      metrics_selected: ["f1Macro"],
+      metrics_selected: ["rootMeanSquaredError"],
       exportID:"",
       rank:0.0,
       metrics: [
@@ -46,12 +46,12 @@ export default {
         // "recall",
         // "f1",
         // "f1Micro",
-        "f1Macro"
+        // "f1Macro"
         // "rocAuc",
         // "rocAucMicro",
         // "rocAucMacro",
         // "meanSquaredError",
-        // "rootMeanSquaredError",
+        "rootMeanSquaredError",
         // "rootMeanSquareErrorAvg",
         // "meanAbsoluteError",
         // "rSquared",

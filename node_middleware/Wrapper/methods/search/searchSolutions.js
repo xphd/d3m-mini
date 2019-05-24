@@ -5,10 +5,6 @@ const getSearchSolutionsResults = require("./getSearchSolutionsResults.js");
 const props = require("../../props");
 const proto = props.proto;
 
-const userAgentTA3 = props.userAgentTA3;
-const grpcVersion = props.grpcVersion;
-const allowed_val_types = props.allowed_val_types;
-
 // import functions
 const getMappedType = require("../../functions/getMappedType");
 const getProblemSchema = require("../../functions/getProblemSchema");
@@ -22,9 +18,12 @@ const task_type_mappings = require("../../mappings/task_type_mappings");
 const evaluationConfig = require(props.CONFIG_PATH);
 
 function searchSolutions(sessionVar) {
+  let userAgentTA3 = props.userAgentTA3;
+  let grpcVersion = props.grpcVersion;
+  let allowed_val_types = props.allowed_val_types;
   // remove old solutions
   // sessionVar.solutions = new Map();
-  const problemSchema = getProblemSchema();
+  let problemSchema = getProblemSchema();
   console.log(problemSchema.about.problemID);
 
   let request = new proto.SearchSolutionsRequest();
@@ -46,20 +45,22 @@ function searchSolutions(sessionVar) {
 
   var problem_desc = new proto.ProblemDescription();
   var problem = new proto.Problem();
-
-  problem_desc.setId(problemSchema.about.problemID);
-  if (!problemSchema.about.problemVersion) {
-    console.log("problem version not set, setting default value 1.0");
-    problem_desc.setVersion("1.0");
-  } else {
-    problem_desc.setVersion(problemSchema.about.problemVersion);
-  }
-  problem_desc.setName(problemSchema.about.problemName);
-  problem_desc.setDescription(problemSchema.about.problemDescription + "");
-
+  // problem.setId(problemSchema.about.problemID);
+  // if (!problemSchema.about.problemVersion) {
+  //   console.log("problem version not set, setting default value 1.0");
+  //   problem.setVersion("1.0");
+  // } else {
+  //   problem.setVersion(problemSchema.about.problemVersion);
+  // }
+  // problem.setName(problemSchema.about.problemName);
+  // problem.setDescription(problemSchema.about.problemDescription + "");
   problem.setTaskType(
     getMappedType(task_type_mappings, problemSchema.about.taskType)
   );
+  // console.log("=-=-");
+  // console.log(problemSchema.about.taskType);
+  // console.log(getMappedType(task_type_mappings, problemSchema.about.taskType));
+  // console.log("-=-=");
   if (task_subtype_mappings[problemSchema.about.taskSubType]) {
     problem.setTaskSubtype(
       getMappedType(task_subtype_mappings, problemSchema.about.taskSubType)
@@ -68,20 +69,24 @@ function searchSolutions(sessionVar) {
     problem.setTaskSubtype(task_subtype_mappings["none"]);
   }
 
-  var metrics = [];
-
-  for (var i = 0; i < problemSchema.inputs.performanceMetrics.length; i++) {
-    metrics.push();
-    metrics[i] = new proto.ProblemPerformanceMetric();
-    metrics[i].setMetric(
-      getMappedType(
-        metric_mappings,
-        problemSchema.inputs.performanceMetrics[i].metric
-      )
+  // set problemPerformanceMetrics
+  let problemPerformanceMetrics = [];
+  let performanceMetrics = problemSchema.inputs.performanceMetrics;
+  for (let i = 0; i < performanceMetrics.length; i++) {
+    problemPerformanceMetrics.push();
+    problemPerformanceMetrics[i] = new proto.ProblemPerformanceMetric();
+    problemPerformanceMetrics[i].setMetric(
+      getMappedType(metric_mappings, performanceMetrics[i].metric)
     );
+    if (performanceMetrics[i].posLabel) {
+      problemPerformanceMetrics[i].setPosLabel(performanceMetrics[i].posLabel);
+    }
+    // if (performanceMetrics[i].k) {
+    //   metrics[i].setK(performanceMetrics[i].k);
+    // }
+    // console.log(metrics[i]);
   }
-
-  problem.setPerformanceMetrics(metrics);
+  problem.setPerformanceMetrics(problemPerformanceMetrics);
 
   problem_desc.setProblem(problem);
   var inputs = [];
@@ -114,18 +119,31 @@ function searchSolutions(sessionVar) {
   request.setInputs(dataset_input);
   request.setProblem(problem_desc);
 
+  // store request
+  if (props.isRequest) {
+    let requestStr = JSON.stringify(request);
+    let path = props.REQUESTS_PATH + "SearchSolutionsRequest.json";
+    fs.writeFileSync(path, requestStr);
+  }
+  //
+
   // console.log("REQUEST", JSON.stringify(request, null, 4));
-  let promise = new Promise(function(fulfill, reject) {
+  let promise = new Promise((fulfill, reject) => {
     console.log("searchSolutions begin");
     let client = props.client;
+
     client.searchSolutions(request, (err, response) => {
       if (err) {
         console.log("Error!searchSolutions");
         reject(err);
       } else {
-        // Added by Alex, for the purpose of Pipeline Visulization
-        let responseStr = JSON.stringify(response);
-        fs.writeFileSync("responses/searchSolutionsResponse.json", responseStr);
+        // store response
+        if (props.isResponse) {
+          let responseStr = JSON.stringify(response);
+          let path = props.RESPONSES_PATH + "searchSolutionsResponse.json";
+          fs.writeFileSync(path, responseStr);
+        }
+        //
 
         sessionVar.search_id = response.search_id;
         // setTimeout(() => getSearchSolutionsResults(sessionVar, fulfill, reject), 180000);

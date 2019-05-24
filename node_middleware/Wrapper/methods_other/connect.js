@@ -1,5 +1,5 @@
 const grpc = require("grpc");
-const props = require("./props");
+const props = require("../props");
 
 function connect(ta2_url) {
   console.log("Connect to:" + ta2_url);

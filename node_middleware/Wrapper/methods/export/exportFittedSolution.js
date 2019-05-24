@@ -6,21 +6,18 @@ const proto = props.proto;
 
 function exportFittedSolution(solution) {
   let solution_id = solution.solution_id;
+  let sessionVar = props.sessionVar;
   console.log("export fitted solution", solution_id);
   let rank = sessionVar.rankVar;
   sessionVar.rankVar = sessionVar.rankVar - 0.00000001;
-  let solutionExportRequest = new proto.SolutionExportRequest();
-  solutionExportRequest.setFittedSolutionId(solution.fit.fit_id);
-  solutionExportRequest.setRank(rank);
+  let request = new proto.SolutionExportRequest();
+  // request.setSolutionId(solution.fit.fit_id);
+  request.setSolutionId(solution_id);
+  request.setRank(rank);
   let client = props.client;
-  client.solutionExport(solutionExportRequest, response => {
+  client.solutionExport(request, response => {
     // no content specified for this message
     console.log("solution exported");
-
-    // Added by Alex, for the purpose of Pipeline Visulization
-    let path = "responses/solutionExportResponse.json";
-    let responseStr = JSON.stringify(response);
-    fs.writeFileSync(path, responseStr);
   });
 }
 

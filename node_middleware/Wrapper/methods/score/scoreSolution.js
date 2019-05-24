@@ -9,6 +9,7 @@ const evaluationConfig = require(props.CONFIG_PATH);
 
 // import mappings
 const metric_mappings = require("../../mappings/metric_mappings");
+const method_mappings = require("../../mappings/method_mappings");
 
 // import functions
 const getMappedType = require("../../functions/getMappedType");
@@ -29,17 +30,35 @@ function scoreSolution(solution) {
   );
   request.setInputs(dataset_input);
 
-  const problemSchema = getProblemSchema();
+  let problemSchema = getProblemSchema();
 
-  let metrics = problemSchema.inputs.performanceMetrics.map(d => d.metric);
-  let mapped_metrics = metrics.map(metric =>
-    getMappedType(metric_mappings, metric)
-  );
-  let problemPerformanceMetrics = mapped_metrics.map(mapped_metric => {
-    let newMetric = new proto.ProblemPerformanceMetric();
-    newMetric.setMetric(mapped_metric);
-    return newMetric;
-  });
+  // let metrics = problemSchema.inputs.performanceMetrics.map(d => d.metric);
+  // let mapped_metrics = metrics.map(metric =>
+  //   getMappedType(metric_mappings, metric)
+  // );
+  // let problemPerformanceMetrics = mapped_metrics.map(mapped_metric => {
+  //   let newMetric = new proto.ProblemPerformanceMetric();
+  //   newMetric.setMetric(mapped_metric);
+  //   return newMetric;
+  // });
+  // request.setPerformanceMetrics(problemPerformanceMetrics);
+
+  let problemPerformanceMetrics = [];
+  let performanceMetrics = problemSchema.inputs.performanceMetrics;
+  for (let i = 0; i < performanceMetrics.length; i++) {
+    problemPerformanceMetrics.push();
+    problemPerformanceMetrics[i] = new proto.ProblemPerformanceMetric();
+    problemPerformanceMetrics[i].setMetric(
+      getMappedType(metric_mappings, performanceMetrics[i].metric)
+    );
+    if (performanceMetrics[i].posLabel) {
+      problemPerformanceMetrics[i].setPosLabel(performanceMetrics[i].posLabel);
+    }
+    // if (performanceMetrics[i].k) {
+    //   metrics[i].setK(performanceMetrics[i].k);
+    // }
+    // console.log(metrics[i]);
+  }
   request.setPerformanceMetrics(problemPerformanceMetrics);
 
   // TODO: the user stuff is actually all optional
@@ -56,11 +75,58 @@ function scoreSolution(solution) {
   // scoringConfiguration.setMethod(proto.EvaluationMethod.TRAINING_DATA);
   // I think TRAINING_DATA is pretty much what we did last time, but it's unsupported so far
   // scoringConfiguration.setMethod(proto.EvaluationMethod.HOLDOUT);
-  scoringConfiguration.setMethod(proto.EvaluationMethod.HOLDOUT);
-  scoringConfiguration.setTrainTestRatio(0.8);
+  // scoringConfiguration.setMethod(proto.EvaluationMethod.K_FOLD);
+  // scoringConfiguration.setFolds(4);
+
   // TODO: use holdout for now, but let users specify in the future
   // scoringConfiguration.setFolds(2);
+
+  // default method and testSize
+  let method = "holdOut";
+  let testSize = 0.8;
+
+  try {
+    method = problemSchema.inputs.dataSplits.method;
+  } catch (err) {
+    console.log(err);
+  }
+  try {
+    testSize = problemSchema.inputs.dataSplits.testSize;
+  } catch (err) {
+    console.log(err);
+  }
+  // console.log("===---");
+  // console.log(method);
+  // console.log(testSize);
+  // console.log("---===");
+  if (method) {
+    scoringConfiguration.setMethod(getMappedType(method_mappings, method));
+  }
+  if (testSize) {
+    scoringConfiguration.setTrainTestRatio(testSize);
+  }
+
+  // // never encounter "k_fold" method so for, thus ignore this for now
+  // if (method.includes("fold")) {
+  //   let folds = 4;
+  //   try{
+  //     folds = problemSchema.inputs.dataSplits.folds; // ??
+  //   } catch(err){
+  //     console.log(err)
+  //   }
+  //   scoringConfiguration.setFolds(folds);
+  // }
+
   request.setConfiguration(scoringConfiguration);
+
+  // store request
+  if (props.isRequest) {
+    let requestStr = JSON.stringify(request);
+    let path =
+      props.REQUESTS_PATH + "scoreSolutionRequests/" + solution_id + ".json";
+    fs.writeFileSync(path, requestStr);
+  }
+  //
 
   let promise = new Promise((fulfill, reject) => {
     let client = props.client;
@@ -69,16 +135,16 @@ function scoreSolution(solution) {
         reject(err);
       } else {
         let scoreRequest_id = response.request_id;
-
         // Added by Alex, for the purpose of Pipeline Visulization
-        let pathPrefix = "responses/scoreSolutionResponses/";
-        // let pathMid = scoreRequestID;
-        let pathMid = solution_id;
-        let pathAffix = ".json";
-        let path = pathPrefix + pathMid + pathAffix;
-        let responseStr = JSON.stringify(response);
-        fs.writeFileSync(path, responseStr);
-
+        if (props.isResponse) {
+          let pathPrefix = props.RESPONSES_PATH + "scoreSolutionResponses/";
+          // let pathMid = scoreRequestID;
+          let pathMid = solution_id;
+          let pathAffix = ".json";
+          let path = pathPrefix + pathMid + pathAffix;
+          let responseStr = JSON.stringify(response);
+          fs.writeFileSync(path, responseStr);
+        }
         getScoreSolutionResults(solution, scoreRequest_id, fulfill, reject);
       }
     });

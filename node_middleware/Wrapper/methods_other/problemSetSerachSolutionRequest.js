@@ -1,7 +1,11 @@
-var jsonfile = require("jsonfile");
+const jsonfile = require("jsonfile");
+const appRoot = require("app-root-path");
+
+// import evaluationConfig
+const evaluationConfig = require(appRoot + "/tufts_gt_wisc_configuration.json");
 
 // import props
-const props = require("./props");
+const props = require("../props");
 
 const proto = props.proto;
 const userAgentTA3 = props.userAgentTA3;
@@ -9,26 +13,28 @@ const grpcVersion = props.grpcVersion;
 const allowed_val_types = props.allowed_val_types;
 
 // import mappings
-const task_type_mappings = require("./mappings/task_type_mappings");
-const task_subtype_mappings = require("./mappings/task_subtype_mappings");
+const metric_mappings = require("../mappings/metric_mappings");
+const task_subtype_mappings = require("../mappings/task_subtype_mappings");
+const task_type_mappings = require("../mappings/task_type_mappings");
 
-// import getMappedType function
-const getMappedType = require("./functions/getMappedType");
+// import functions
+const getMappedType = require("../functions/getMappedType");
+const handleImageUrl = require("../functions/handleImageUrl");
 
 problemSetSerachSolutionRequest = function(problemSet, dirPath) {
   var request = new proto.SearchSolutionsRequest();
 
   request.setUserAgent(userAgentTA3);
   request.setVersion(grpcVersion);
-  request.setTimeBound(0.25);
+  request.setTimeBoundSearch(0.25);
   request.setAllowedValueTypes(allowed_val_types);
 
   var problem_desc = new proto.ProblemDescription();
   var problem = new proto.Problem();
-  problem.setId(problemSet.about.problemID);
-  problem.setVersion(problemSet.about.problemVersion);
-  problem.setName(problemSet.about.problemName);
-  problem.setDescription(problemSet.about.problemDescription);
+  // problem.setId(problemSet.about.problemID);
+  // problem.setVersion(problemSet.about.problemVersion);
+  // problem.setName(problemSet.about.problemName);
+  // problem.setDescription(problemSet.about.problemDescription);
   problem.setTaskType(
     getMappedType(task_type_mappings, problemSet.about.taskType)
   );
@@ -70,6 +76,9 @@ problemSetSerachSolutionRequest = function(problemSet, dirPath) {
       next_target.setTargetIndex(thisTarget.targetIndex);
       next_target.setResourceId(thisTarget.resID);
       next_target.setColumnIndex(thisTarget.colIndex);
+      // console.log("--==")
+      // console.log(thisTarget.colName)
+      // console.log("==--")
       next_target.setColumnName(thisTarget.colName);
       targets.push(next_target);
     }
