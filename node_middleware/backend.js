@@ -1,7 +1,7 @@
 ("use strict");
 
-// const TA2PORT = "localhost:50054"; // UCB
-const TA2PORT = "localhost:50055"; // ISI
+const TA2PORT = "localhost:50054";
+// const TA2PORT = "localhost:50055";
 
 // This backend is used to work with vue frontend
 // it reads files in the folder of "responses" and send wanted infors to frontend

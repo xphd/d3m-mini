@@ -16,21 +16,17 @@ function getProduceSolutions(solution_ids_selected) {
       return getProduceSolution(solution_id);
     });
   });
-  // for (let i = 0; i < solutions.length; i++) {
-  //   let solution = solutions[i];
-  //   chain = chain.then(solution_id => {
-  //     return getProduceSolution(solution);
-  //   });
-  // }
 
   // Added by Alex, for the purpose of Pipeline Visulization
-  let pathPrefix = "responses/produceSolutionResponses/";
-  if (!fs.existsSync(pathPrefix)) {
-    fs.mkdirSync(pathPrefix);
-  }
-  pathPrefix = "responses/getProduceSolutionResultsResponses/";
-  if (!fs.existsSync(pathPrefix)) {
-    fs.mkdirSync(pathPrefix);
+  if (props.isResponse) {
+    let pathPrefix = props.RESPONSES_PATH + "produceSolutionResponses//";
+    if (!fs.existsSync(pathPrefix)) {
+      fs.mkdirSync(pathPrefix);
+    }
+    pathPrefix = props.RESPONSES_PATH + "getProduceSolutionResultsResponses/";
+    if (!fs.existsSync(pathPrefix)) {
+      fs.mkdirSync(pathPrefix);
+    }
   }
 
   let promise = new Promise((fulfill, reject) => {
@@ -86,13 +82,15 @@ function getProduceSolution(solution_id) {
           getProduceSolutionResults(solution_id, request_id, fulfill, reject);
 
           // Added by Alex, for the purpose of Pipeline Visulization
-          let pathPrefix = "responses/produceSolutionResponses/";
-          // let pathMid = produceSolutionRequestID;
-          let pathMid = solution_id;
-          let pathAffix = ".json";
-          let path = pathPrefix + pathMid + pathAffix;
-          let responseStr = JSON.stringify(produceSolutionResponse);
-          fs.writeFileSync(path, responseStr);
+          if (props.isResponse) {
+            let pathPrefix = props.RESPONSES_PATH + "produceSolutionResponses/";
+            // let pathMid = produceSolutionRequestID;
+            let pathMid = solution_id;
+            let pathAffix = ".json";
+            let path = pathPrefix + pathMid + pathAffix;
+            let responseStr = JSON.stringify(produceSolutionResponse);
+            fs.writeFileSync(path, responseStr);
+          }
         }
       }
     );
@@ -116,6 +114,10 @@ function getProduceSolutionResults(solution_id, request_id, fulfill, reject) {
     );
     call.on("data", response => {
       // console.log("getProduceSolutionResultsResponse", request_id);
+      console.log(">>>+++++++++>");
+      console.log("getFitSolutionResultsResponses");
+      console.log(response);
+      console.log("<+++++++++<<<");
       if (response.progress.state === "COMPLETED") {
         // fitting solution is finished
         let exposedOutputs = response.exposed_outputs;
@@ -129,7 +131,7 @@ function getProduceSolutionResults(solution_id, request_id, fulfill, reject) {
         solution.fit.outputCsv = exposedOutputs[steps[0]]["csv_uri"].replace(
           "file://",
           ""
-        );        
+        );
         if (!solution.fit.outputCsv.trim()) {
           console.log(
             "WARNING: solution " +
@@ -143,12 +145,15 @@ function getProduceSolutionResults(solution_id, request_id, fulfill, reject) {
       }
 
       // Added by Alex, for the purpose of Pipeline Visulization
-      let pathPrefix = "responses/getProduceSolutionResultsResponses/";
-      let pathMid = request_id;
-      let pathAffix = ".json";
-      let path = pathPrefix + pathMid + pathAffix;
-      let responseStr = JSON.stringify(request_id);
-      fs.writeFileSync(path, responseStr);
+      if (props.isResponse) {
+        let pathPrefix =
+          props.RESPONSES_PATH + "getProduceSolutionResultsResponses/";
+        let pathMid = solution.solution_id;
+        let pathAffix = ".json";
+        let path = pathPrefix + pathMid + pathAffix;
+        let responseStr = JSON.stringify(response);
+        fs.writeFileSync(path, responseStr);
+      }
     });
     call.on("error", err => {
       console.log("Error!getProduceSolutionResults", request_id);

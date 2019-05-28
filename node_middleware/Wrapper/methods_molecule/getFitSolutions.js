@@ -13,13 +13,15 @@ function getFitSolutions(solution_ids_selected) {
   console.log("fitSolutions called");
 
   // Added by Alex, for the purpose of Pipeline Visulization
-  let pathPrefix = "responses/fitSolutionResponses/";
-  if (!fs.existsSync(pathPrefix)) {
-    fs.mkdirSync(pathPrefix);
-  }
-  pathPrefix = "responses/getFitSolutionResultsResponses/";
-  if (!fs.existsSync(pathPrefix)) {
-    fs.mkdirSync(pathPrefix);
+  if (props.isResponse) {
+    let pathPrefix = props.RESPONSES_PATH + "fitSolutionResponses/";
+    if (!fs.existsSync(pathPrefix)) {
+      fs.mkdirSync(pathPrefix);
+    }
+    pathPrefix = props.RESPONSES_PATH + "getFitSolutionResultsResponses/";
+    if (!fs.existsSync(pathPrefix)) {
+      fs.mkdirSync(pathPrefix);
+    }
   }
 
   let chain = Promise.resolve();
@@ -67,12 +69,14 @@ function getFitSolution(solution_id) {
         getFitSolutionResults(solution, fitSolutionResponseID, fulfill, reject);
 
         // Added by Alex, for the purpose of Pipeline Visulization
-        let pathPrefix = "responses/fitSolutionResponses/";
-        let pathMid = solution_id;
-        let pathAffix = ".json";
-        let path = pathPrefix + pathMid + pathAffix;
-        let responseStr = JSON.stringify(fitSolutionResponse);
-        fs.writeFileSync(path, responseStr);
+        if (props.isResponse) {
+          let pathPrefix = props.RESPONSES_PATH + "fitSolutionResponses/";
+          let pathMid = solution_id;
+          let pathAffix = ".json";
+          let path = pathPrefix + pathMid + pathAffix;
+          let responseStr = JSON.stringify(fitSolutionResponse);
+          fs.writeFileSync(path, responseStr);
+        }
       }
     });
   });
@@ -92,12 +96,17 @@ function getFitSolutionResults(
   return new Promise(function(fulfill, reject) {
     let client = props.client;
     let call = client.getFitSolutionResults(getFitSolutionResultsRequest);
-    call.on("data", function(getFitSolutionResultsResponse) {
-      // console.log("getfitSolutionResultsResponse", getFitSolutionResultsResponse);
-      if (getFitSolutionResultsResponse.progress.state === "COMPLETED") {
+    call.on("data", function(response) {
+      // console.log("response", response);
+      console.log(">>>------->");
+      console.log("getFitSolutionResultsResponses");
+      console.log(response);
+      console.log("<-------<<<");
+
+      if (response.progress.state === "COMPLETED") {
         // fitting solution is finished
-        let fit_id = getFitSolutionResultsResponse.fitted_solution_id;
-        let exposedOutputs = getFitSolutionResultsResponse.exposed_outputs;
+        let fit_id = response.fitted_solution_id;
+        let exposedOutputs = response.exposed_outputs;
         // console.log("FITTED SOLUTION COMPLETED", fitID);
         // console.log("EXPOSED OUTPUTS", exposedOutputs);
         solution.fit = {
@@ -105,15 +114,18 @@ function getFitSolutionResults(
           exposedOutputs: exposedOutputs
         };
 
-        console.log("solution is: ",solution)
+        // console.log("solution is: ", solution);
 
         // Added by Alex, for the purpose of Pipeline Visulization
-        let pathPrefix = "responses/getFitSolutionResultsResponses/";
-        let pathMid = solution.solution_id;
-        let pathAffix = ".json";
-        let path = pathPrefix + pathMid + pathAffix;
-        let responseStr = JSON.stringify(getFitSolutionResultsResponse);
-        fs.writeFileSync(path, responseStr);
+        if (props.isResponse) {
+          let pathPrefix =
+            props.RESPONSES_PATH + "getFitSolutionResultsResponses/";
+          let pathMid = solution.solution_id;
+          let pathAffix = ".json";
+          let path = pathPrefix + pathMid + pathAffix;
+          let responseStr = JSON.stringify(response);
+          fs.writeFileSync(path, responseStr);
+        }
       }
     });
     call.on("error", function(err) {

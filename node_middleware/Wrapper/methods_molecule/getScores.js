@@ -18,10 +18,13 @@ function getScores(solution_ids_selected, metrics) {
   console.log("getScores");
   let chain = Promise.resolve();
 
-  let pathPrefix = "responses/getScoreResponses/";
-  if (!fs.existsSync(pathPrefix)) {
-    fs.mkdirSync(pathPrefix);
+  if (props.isResponse) {
+    let pathPrefix = props.RESPONSES_PATH + "getScoreResponses/";
+    if (!fs.existsSync(pathPrefix)) {
+      fs.mkdirSync(pathPrefix);
+    }
   }
+
   for (let i = 0; i < solution_ids_selected.length; i++) {
     let solution_id = solution_ids_selected[i];
     chain = chain.then(() => {
@@ -93,29 +96,30 @@ function getScoresResponse(solution_id, scoreRequestID, fulfill, reject) {
   getScoreSolutionResultsRequest.setRequestId(scoreRequestID);
   let client = props.client;
   let call = client.getScoreSolutionResults(getScoreSolutionResultsRequest);
-  call.on("data", function(getScoreSolutionResultsResponse) {
+  call.on("data", function(response) {
     // Added by Alex, for the purpose of Pipeline Visulization
-    let pathPrefix = "responses/getScoreResponses/";
-    let pathMid = solution_id;
-    let pathAffix = ".json";
-    let path = pathPrefix + pathMid + pathAffix;
-    let responseStr = JSON.stringify(getScoreSolutionResultsResponse);
-    fs.writeFileSync(path, responseStr);
+    if (props.isResponse) {
+      let pathPrefix = props.RESPONSES_PATH + "getScoreResponses/";
+      let pathMid = solution_id;
+      let pathAffix = ".json";
+      let path = pathPrefix + pathMid + pathAffix;
+      let responseStr = JSON.stringify(response);
+      fs.writeFileSync(path, responseStr);
+    }
 
-    if (getScoreSolutionResultsResponse.progress.state === "COMPLETED") {
-      // console.log("scoreSolutionResultsResponse", getScoreSolutionResultsResponse);
+    console.log(">>>============>");
+    console.log("getScoreResponses");
+    console.log(JSON.stringify(response));
+    console.log("<===========<<<");
+
+    if (response.progress.state === "COMPLETED") {
+      // console.log("scoreSolutionResultsResponse", response);
       /*
-          let targets = getScoreSolutionResultsResponse.scores.map(score => score.targets);
+          let targets = response.scores.map(score => score.targets);
           */
-      let value_keys = getScoreSolutionResultsResponse.scores.map(
-        score => score.value.value
-      );
-      let metrics = getScoreSolutionResultsResponse.scores.map(
-        score => score.metric
-      );
-      let values = value_keys.map(
-        (key, i) => getScoreSolutionResultsResponse.scores[i].value[key]
-      );
+      let value_keys = response.scores.map(score => score.value.value);
+      let metrics = response.scores.map(score => score.metric);
+      let values = value_keys.map((key, i) => response.scores[i].value[key]);
       values = values.map(thing => thing[thing.raw]);
       // console.log("METRICS", metrics);
       // console.log("VALUES", values);
@@ -134,17 +138,14 @@ function getScoresResponse(solution_id, scoreRequestID, fulfill, reject) {
         console.log(solution);
       }
     } else {
-      console.log(
-        "scoreSolutionResultsResponse INTERMEDIATE",
-        getScoreSolutionResultsResponse
-      );
+      console.log("scoreSolutionResultsResponse INTERMEDIATE", response);
     }
     // // Added by Alex, for the purpose of Pipeline Visulization
     // let pathPrefix = "responses/getScoreResponses/";
     // let pathMid = solution_id;
     // let pathAffix = ".json";
     // let path = pathPrefix + pathMid + pathAffix;
-    // let responseStr = JSON.stringify(getScoreSolutionResultsResponse);
+    // let responseStr = JSON.stringify(response);
     // fs.writeFileSync(path, responseStr);
   });
   call.on("error", function(err) {
