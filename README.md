@@ -1,9 +1,9 @@
 # Project setup
 
-## Inside node_middleware AND vue_frontend
+## Quick Install
 
 ```
-yarn
+./install.sh
 ```
 
 # Project Start
