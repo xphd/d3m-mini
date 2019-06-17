@@ -2,8 +2,8 @@ const fs = require("fs");
 const getSearchSolutionsResults = require("./getSearchSolutionsResults.js");
 
 // import variables
-const props = require("../../props");
-const proto = props.proto;
+// const props = require("../../props");
+// const proto = props.proto;
 
 // import functions
 const getMappedType = require("../../functions/getMappedType");
@@ -15,9 +15,14 @@ const metric_mappings = require("../../mappings/metric_mappings");
 const task_subtype_mappings = require("../../mappings/task_subtype_mappings");
 const task_type_mappings = require("../../mappings/task_type_mappings");
 
-const evaluationConfig = require(props.CONFIG_PATH);
+// const evaluationConfig = require(props.CONFIG_PATH);
 
 function searchSolutions(sessionVar) {
+  const props = this.props;
+  const proto = props.proto;
+  const evaluationConfig = 
+
+
   let userAgentTA3 = props.userAgentTA3;
   let grpcVersion = props.grpcVersion;
   let allowed_val_types = props.allowed_val_types;

@@ -1,6 +1,14 @@
 ("use strict");
 
 const TA2PORT = "localhost:50054";
+
+const APP_ROOT_PATH = require("app-root-path");
+const datasetPath =
+  APP_ROOT_PATH +
+  "/static/local_testing_data/185_baseball/185_baseball_dataset";
+const problemPath =
+  APP_ROOT_PATH +
+  "/static/local_testing_data/185_baseball/185_baseball_problem";
 // const TA2PORT = "localhost:50055";
 
 // This backend is used to work with vue frontend
@@ -11,8 +19,21 @@ const express = require("express");
 const socketIO = require("socket.io");
 
 // const grpcClientWrapper = require("./Wrapper/Wrapper.js");
-const Herald = require("./Herald/Herald.js");
 const Session = require("./Session/Session.js");
+const Dataset = require("./Session/Dataset.js");
+const Problem = require("./Session/Problem.js");
+const Herald = require("./Herald/Herald.js");
+
+const session = new Session(true);
+
+const dataset = new Dataset(datasetPath);
+const problem = new Problem(problemPath);
+
+session.setDataset(dataset);
+session.setProblem(problem);
+
+const herald = new Herald();
+herald.setSession(session);
 
 const app = express();
 const server = http.createServer(app);
@@ -24,13 +45,13 @@ console.log("Server listening " + PORT);
 
 serverSocket.on("connection", socket => {
   socket.on("helloSearch", () => {
-    grpcClientWrapper.connect(TA2PORT);
-    grpcClientWrapper.helloLoop().then(grpcClientWrapper.searchSolutions);
+    herald.connect(TA2PORT);
+    herald.helloLoop(); //.then(herald.searchSolutions);
   });
 
   socket.on("getAllSolutions", () => {
     console.log("getAllSolutions");
-    let solutions = grpcClientWrapper.getAllSolutions();
+    let solutions = herald.getAllSolutions();
     // let solution = console.log(Array.from(solutions.keys()));
     socket.emit("getAllSolutionsResponse", Array.from(solutions.keys()));
   });
@@ -42,29 +63,29 @@ serverSocket.on("connection", socket => {
       // console.log(solutionIDs_selected, metrics_selected);
 
       // let metrics = ["accuracy"];
-      grpcClientWrapper.getScores(solutionIDs_selected, metrics_selected);
+      herald.getScores(solutionIDs_selected, metrics_selected);
     }
   );
 
   socket.on("describeSolutions", solutionIDs_selected => {
     console.log("describeSolutions");
-    grpcClientWrapper.getDescriptions(solutionIDs_selected);
+    herald.getDescriptions(solutionIDs_selected);
   });
 
   socket.on("fitSolutions", solutionIDs_selected => {
     console.log("fitSolutions");
-    grpcClientWrapper.getFitSolutions(solutionIDs_selected);
+    herald.getFitSolutions(solutionIDs_selected);
   });
 
   socket.on("produceSolutions", solutionIDs_selected => {
     console.log("produceSolutions");
-    grpcClientWrapper.getProduceSolutions(solutionIDs_selected);
+    herald.getProduceSolutions(solutionIDs_selected);
   });
 
   socket.on("exportSolutions", (exportID, rank) => {
     console.log("exportSolutions");
     console.log(exportID);
     console.log(rank);
-    grpcClientWrapper.exportSolutions(exportID, rank);
+    herald.exportSolutions(exportID, rank);
   });
 });

@@ -2,11 +2,14 @@ const fs = require("fs");
 const fse = require("fs-extra");
 
 // import variables
-const props = require("../props");
-const proto = props.proto;
-const sessionVar = props.sessionVar;
+// const props = require("../props");
+// const proto = props.proto;
+// const sessionVar = props.sessionVar;
 
 function helloLoop() {
+  const props = this.props;
+  const proto = props.proto;
+  const sessionVar = props.sessionVar;
   console.log("helloLoop begin");
 
   if (props.isRequest) {
@@ -46,10 +49,10 @@ function helloLoop() {
           // we do not reject here, because ta2 can becaome available at some point
           // reject(err);
         } else {
-          console.log("Success!Hello");          
+          console.log("Success!Hello");
           sessionVar.connected = true;
           sessionVar.ta2Ident = response;
-          // props.allowed_val_types = response.allowed_value_types; 
+          // props.allowed_val_types = response.allowed_value_types;
           fulfill(sessionVar);
 
           // Added by Alex, for the purpose of Pipeline Visulization
