@@ -10,7 +10,9 @@ const http = require("http");
 const express = require("express");
 const socketIO = require("socket.io");
 
-const grpcClientWrapper = require("./Wrapper/Wrapper.js");
+// const grpcClientWrapper = require("./Wrapper/Wrapper.js");
+const Herald = require("./Herald/Herald.js");
+const Session = require("./Session/Session.js");
 
 const app = express();
 const server = http.createServer(app);

@@ -2,19 +2,18 @@ import Dataset from "./Dataset.js";
 import Problem from "./Problem.js";
 
 export default class Session {
+  constructor(devMode = false) {
+    this.devMode = devMode;
+    console.log("this is session constructor", this.devMode);
+  }
 
   //* callbacks:
-  datasetCallbacks = [ ];
+  datasetCallbacks = [];
   //* state objects
   dataset = null;
   modeling_config = null;
   // are we running in development mode (without a ta2)
   devMode = false;
-
-  constructor(devMode = false) {
-    this.devMode = devMode;
-    console.log("this is session constructor", this.devMode);
-  }
 
   setProblem(problem_schema) {
     this.modeling_config = new Problem(problem_schema);
@@ -50,5 +49,4 @@ export default class Session {
   handleDatasetChange() {
     this.datasetCallbacks.forEach(f => process.nextTick(() => f(this.dataset)));
   }
-
 }
