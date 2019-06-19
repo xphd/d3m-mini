@@ -25,6 +25,10 @@ class Dataset {
     // }
   }
 
+  getDatasetPath() {
+    return this.datasetPath;
+  }
+
   getDatasetSchema() {
     return this.datasetSchema;
   }

@@ -10,6 +10,7 @@ class Session {
     // * state objects
     this.dataset = null;
     this.problem = null;
+    this.herald = null;
     // are we running in development mode (without a ta2)
     this.devMode = false;
   }
@@ -22,6 +23,20 @@ class Session {
   // are we running in development mode (without a ta2)
   // devMode = false;
 
+  // getters
+  getDataSet() {
+    return this.dataset;
+  }
+
+  getProblem() {
+    return this.problem;
+  }
+
+  getHerald() {
+    return this.herald;
+  }
+
+  // setters
   setDataset(dataset) {
     // try {
     this.dataset = dataset;
@@ -39,12 +54,8 @@ class Session {
     this.problem = problem;
   }
 
-  getDataSet() {
-    return this.dataset;
-  }
-
-  getProblem() {
-    return this.problem;
+  setHerald(herald) {
+    this.herald = herald;
   }
 
   /**

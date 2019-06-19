@@ -19,21 +19,24 @@ const express = require("express");
 const socketIO = require("socket.io");
 
 // const grpcClientWrapper = require("./Wrapper/Wrapper.js");
+const Relay = require("./Relay/Relay.js");
+
 const Session = require("./Session/Session.js");
 const Dataset = require("./Session/Dataset.js");
 const Problem = require("./Session/Problem.js");
-const Herald = require("./Herald/Herald.js");
+const Herald = require("./Session/Herald.js");
 
 const session = new Session(true);
-
 const dataset = new Dataset(datasetPath);
 const problem = new Problem(problemPath);
+const herald = new Herald();
+herald.setDataset(dataset);
+herald.setProblem(problem);
+herald.setPort(TA2PORT);
 
 session.setDataset(dataset);
 session.setProblem(problem);
-
-const herald = new Herald();
-herald.setSession(session);
+session.setHerald(herald);
 
 const app = express();
 const server = http.createServer(app);
@@ -45,8 +48,8 @@ console.log("Server listening " + PORT);
 
 serverSocket.on("connection", socket => {
   socket.on("helloSearch", () => {
-    herald.connect(TA2PORT);
-    herald.helloLoop(); //.then(herald.searchSolutions);
+    Relay.connect(herald);
+    Relay.helloLoop(herald); //.then(Relay.searchSolutions);
   });
 
   socket.on("getAllSolutions", () => {
