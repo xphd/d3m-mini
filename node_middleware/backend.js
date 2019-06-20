@@ -49,7 +49,7 @@ console.log("Server listening " + PORT);
 serverSocket.on("connection", socket => {
   socket.on("helloSearch", () => {
     Relay.connect(herald);
-    Relay.helloLoop(herald); //.then(Relay.searchSolutions);
+    Relay.helloLoop(herald).then(Relay.searchSolutions);
   });
 
   socket.on("getAllSolutions", () => {

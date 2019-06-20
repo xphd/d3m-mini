@@ -5,10 +5,12 @@ class Herald {
     this.problem = null;
     this.client = null;
     this.port = null; // port for ta2
+    this.solutions = null;
 
     // not to be private
     this.isConnected = false;
     this.ta2Ident = null;
+    this.search_id = null;
   }
 
   // getters
@@ -28,6 +30,10 @@ class Herald {
     return this.port;
   }
 
+  getSolutions() {
+    return this.solutions;
+  }
+
   // setters
   setDataset(dataset) {
     this.dataset = dataset;
@@ -43,6 +49,10 @@ class Herald {
 
   setPort(port) {
     this.port = port;
+  }
+
+  setSolutions(solutions) {
+    this.solutions = solutions;
   }
 }
 

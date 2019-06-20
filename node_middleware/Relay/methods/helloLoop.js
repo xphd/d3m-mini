@@ -26,7 +26,7 @@ function helloLoop(herald) {
   // }
   let request = new proto.HelloRequest();
   let waiting = false;
-  function fun(fulfill, reject) {
+  let promise = new Promise((fulfill, reject) => {
     setInterval(() => {
       if (waiting || herald.isConnected) {
         return;
@@ -45,6 +45,7 @@ function helloLoop(herald) {
           herald.isConnected = true;
           herald.ta2Ident = response;
           // props.allowed_val_types = response.allowed_value_types;
+          console.log("response");
           fulfill(herald);
 
           // Added by Alex, for the purpose of Pipeline Visulization
@@ -59,8 +60,8 @@ function helloLoop(herald) {
         }
       });
     }, 10000);
-  }
-  let promise = new Promise(fun);
+  });
+  // let promise = new Promise(fun);
   return promise;
 }
 

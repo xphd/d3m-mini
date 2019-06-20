@@ -9,6 +9,8 @@
 exports.connect = require("./functions/connect");
 
 exports.helloLoop = require("./methods/helloLoop");
+
+exports.searchSolutions = require("./methods/search/searchSolutions");
 // const endSearchSolutions = require("./methods/endSearchSolutions");
 // const listPrimitives = require("./methods/listPrimitives");
 // const searchSolutions = require("./methods/search/searchSolutions");

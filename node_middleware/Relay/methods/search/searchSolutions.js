@@ -17,21 +17,25 @@ const task_type_mappings = require("../../mappings/task_type_mappings");
 
 // const evaluationConfig = require(props.CONFIG_PATH);
 
+const proto = require("../../proto.js");
+const config = require("../../config.js");
+
 function searchSolutions(herald) {
-  const props = herald.props;
-  const proto = props.proto;
-  const sessionVar = props.sessionVar;
+  console.log("searchSolutions begin");
+  // const props = herald.props;
+  // const proto = props.proto;
+  // const sessionVar = props.sessionVar;
   // const evaluationConfig =
-  let session = herald.getSession();
-  let datasetSession = session.getDataset();
-  let problemSession = session.getProblem();
+  // let session = herald.getSession();
+  let datasetH = herald.getDataset();
+  let problemH = herald.getProblem();
 
   // let datasetSchema = datasetSession.getDatasetSchema();
-  let problemSchema = problemSession.getProblemSchema();
+  let problemSchema = problemH.getProblemSchema();
 
-  let userAgentTA3 = props.userAgentTA3;
-  let grpcVersion = props.grpcVersion;
-  let allowed_val_types = props.allowed_val_types;
+  let userAgentTA3 = config.userAgentTA3;
+  let grpcVersion = config.grpcVersion;
+  let allowed_val_types = config.allowed_val_types;
   // remove old solutions
   // sessionVar.solutions = new Map();
   // let problemSchema = getProblemSchema();
@@ -44,7 +48,7 @@ function searchSolutions(herald) {
 
   let timeBound = 0;
   let msg = "";
-  if (sessionVar.ta2Ident.user_agent.startsWith("nyu_ta2")) {
+  if (herald.ta2Ident.user_agent.startsWith("nyu_ta2")) {
     timeBound = 10;
     msg = "nyu ta2 detected; timeBound for searching to " + timeBound;
   } else {
@@ -129,24 +133,23 @@ function searchSolutions(herald) {
   //   "file://" + handleImageUrl(evaluationConfig.dataset_schema)
   // );
   dataset_input.setDatasetUri(
-    "file://" +
-      handleImageUrl(datasetSession.getDatasetPath() + "/datasetDoc.json")
+    "file://" + handleImageUrl(datasetH.getDatasetPath() + "/datasetDoc.json")
   );
   request.setInputs(dataset_input);
   request.setProblem(problem_desc);
 
   // store request
-  if (props.isRequest) {
-    let requestStr = JSON.stringify(request);
-    let path = props.REQUESTS_PATH + "SearchSolutionsRequest.json";
-    fs.writeFileSync(path, requestStr);
-  }
+  // if (props.isRequest) {
+  //   let requestStr = JSON.stringify(request);
+  //   let path = props.REQUESTS_PATH + "SearchSolutionsRequest.json";
+  //   fs.writeFileSync(path, requestStr);
+  // }
   //
 
   // console.log("REQUEST", JSON.stringify(request, null, 4));
   let promise = new Promise((fulfill, reject) => {
     console.log("searchSolutions begin");
-    let client = props.client;
+    let client = herald.getClient();
 
     client.searchSolutions(request, (err, response) => {
       if (err) {
@@ -154,20 +157,21 @@ function searchSolutions(herald) {
         reject(err);
       } else {
         // store response
-        if (props.isResponse) {
-          let responseStr = JSON.stringify(response);
-          let path = props.RESPONSES_PATH + "searchSolutionsResponse.json";
-          fs.writeFileSync(path, responseStr);
-        }
+        // if (props.isResponse) {
+        //   let responseStr = JSON.stringify(response);
+        //   let path = props.RESPONSES_PATH + "searchSolutionsResponse.json";
+        //   fs.writeFileSync(path, responseStr);
+        // }
         //
 
-        sessionVar.search_id = response.search_id;
+        herald.search_id = response.search_id;
         // setTimeout(() => getSearchSolutionsResults(sessionVar, fulfill, reject), 180000);
         getSearchSolutionsResults(herald, fulfill, reject);
       }
     });
     console.log("searchSolutions end");
   });
+
   return promise;
 }
 
