@@ -9,8 +9,9 @@ class Herald {
 
     // not to be private
     this.isConnected = false;
-    this.ta2Ident = null;
-    this.search_id = null;
+    this.ta2Ident = "";
+    this.search_id = "";
+    this.rankVar = 20;
   }
 
   // getters
@@ -85,10 +86,10 @@ module.exports = Herald;
 //       // CONFIG_PATH: CONFIG_PATH,
 
 //       // create folder to store response from ta2
-//       isResponse: true, // true if responses folder is wanted
+//      isResponse: true, // true if responses folder is wanted
 //       RESPONSES_PATH: APP_ROOT_PATH + "/output/responses/",
 
 //       // create folder to store request to ta2
-//       isRequest: true, // true if requests folder is wanted
+//      isRequest: true, // true if requests folder is wanted
 //       REQUESTS_PATH: APP_ROOT_PATH + "/output/requests/"
 //     };

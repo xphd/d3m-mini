@@ -19,7 +19,7 @@ const express = require("express");
 const socketIO = require("socket.io");
 
 // const grpcClientWrapper = require("./Wrapper/Wrapper.js");
-const Relay = require("./Relay/Relay.js");
+const relay = require("./relay");
 
 const Session = require("./Session/Session.js");
 const Dataset = require("./Session/Dataset.js");
@@ -48,8 +48,8 @@ console.log("Server listening " + PORT);
 
 serverSocket.on("connection", socket => {
   socket.on("helloSearch", () => {
-    Relay.connect(herald);
-    Relay.helloLoop(herald).then(Relay.searchSolutions);
+    relay.connect(herald);
+    relay.helloLoop(herald).then(relay.searchSolutions);
   });
 
   socket.on("getAllSolutions", () => {
