@@ -2,9 +2,22 @@ const fs = require("fs");
 
 class Dataset {
   // FIXME: constructor should take a path instead of the old schema
-  constructor(datasetPath) {
+  constructor(datasetPath, datasetName) {
+    this.datasetName = datasetName;
     this.datasetPath = datasetPath;
     this.datasetSchema = require(datasetPath + "/datasetDoc.json");
+    console.log(this.datasetSchema.about.datasetID);
+    this.learningDataFile = datasetPath + "/tables/learningData.csv";
+
+    //
+    this.isAllProblemsGenerated = false;
+    this.allGeneratedProblemPaths = [];
+    //
+
+    //
+    // from seed OR datamart?
+    //
+
     // now get schema from datasetPath
     // let files = fs
     //   .readdirSync(datasetPath)
@@ -25,6 +38,10 @@ class Dataset {
     // }
   }
 
+  getDatasetName() {
+    return this.datasetName;
+  }
+
   getDatasetPath() {
     return this.datasetPath;
   }
@@ -35,6 +52,14 @@ class Dataset {
 
   getLearningDataFile() {
     return this.learningDataFile;
+  }
+
+  setAllGeneratedProblemPaths(allGeneratedProblemPaths) {
+    if (this.isAllProblemsGenerated) {
+      // notify
+    } else {
+      this.allGeneratedProblemPaths = allGeneratedProblemPaths;
+    }
   }
 }
 

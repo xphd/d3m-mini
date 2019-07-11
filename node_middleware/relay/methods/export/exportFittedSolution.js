@@ -17,6 +17,7 @@ function exportFittedSolution(herald, solution) {
   let client = props.client;
   client.solutionExport(request, response => {
     // no content specified for this message
+    // console.log(response);
     console.log("solution exported");
   });
 }

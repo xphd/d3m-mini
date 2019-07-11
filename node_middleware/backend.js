@@ -2,14 +2,18 @@
 
 const TA2PORT = "localhost:50054";
 
-const APP_ROOT_PATH = require("app-root-path");
+const appRootPath = require("app-root-path");
+const datasetName = "185_baseball";
 const datasetPath =
-  APP_ROOT_PATH +
-  "/static/local_testing_data/185_baseball/185_baseball_dataset";
+  appRootPath +
+  "/static/local_testing_data/" +
+  datasetName +
+  "/" +
+  datasetName +
+  "_dataset";
+
 const problemPath =
-  APP_ROOT_PATH +
-  "/static/local_testing_data/185_baseball/185_baseball_problem";
-// const TA2PORT = "localhost:50055";
+  appRootPath + "/static/local_testing_data/185_baseball/185_baseball_problem";
 
 // This backend is used to work with vue frontend
 // it reads files in the folder of "responses" and send wanted infors to frontend
@@ -29,14 +33,15 @@ const Herald = require("./Session/Herald.js");
 const session = new Session(true);
 const dataset = new Dataset(datasetPath);
 const problem = new Problem(problemPath);
-const herald = new Herald();
+let heraldId = 101;
+const herald = new Herald(heraldId);
 herald.setDataset(dataset);
 herald.setProblem(problem);
 herald.setPort(TA2PORT);
 
-session.setDataset(dataset);
-session.setProblem(problem);
-session.setHerald(herald);
+session.setCurrentDataset(dataset);
+session.setCurrentProblem(problem);
+session.setCurrentHerald(herald);
 
 const app = express();
 const server = http.createServer(app);

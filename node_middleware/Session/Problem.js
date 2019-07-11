@@ -22,6 +22,10 @@ class Problem {
     // }
   }
 
+  getProblemPath() {
+    return this.problemPath;
+  }
+
   getProblemSchema() {
     return this.problemSchema;
   }
