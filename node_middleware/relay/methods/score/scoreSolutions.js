@@ -6,6 +6,7 @@ function scoreSolutions(herald) {
   // console.log("scoreSolutions called");
   let solutions = herald.getSolutions();
   let solutions_array = Array.from(solutions.values());
+  console.log("number of solutions found:", solutions_array.length);
   let chain = Promise.resolve();
   solutions_array.forEach(solution => {
     chain = chain.then(() => {
@@ -13,29 +14,29 @@ function scoreSolutions(herald) {
     });
   });
 
-  // if (props.isResponse) {
-  //   // onetime response
-  //   let pathPrefix = props.RESPONSES_PATH + "scoreSolutionResponses/";
-  //   if (!fs.existsSync(pathPrefix)) {
-  //     fs.mkdirSync(pathPrefix);
-  //   }
-  //   pathPrefix = props.RESPONSES_PATH + "getScoreSolutionResultsResponses/";
-  //   if (!fs.existsSync(pathPrefix)) {
-  //     fs.mkdirSync(pathPrefix);
-  //   }
-  // }
+  if (herald.isResponse) {
+    // onetime response
+    let pathPrefix = herald.RESPONSES_PATH + "scoreSolutionResponses/";
+    if (!fs.existsSync(pathPrefix)) {
+      fs.mkdirSync(pathPrefix);
+    }
+    pathPrefix = herald.RESPONSES_PATH + "getScoreSolutionResultsResponses/";
+    if (!fs.existsSync(pathPrefix)) {
+      fs.mkdirSync(pathPrefix);
+    }
+  }
 
-  // if (props.isRequest) {
-  //   // onetime response
-  //   let pathPrefix = props.REQUESTS_PATH + "scoreSolutionRequests/";
-  //   if (!fs.existsSync(pathPrefix)) {
-  //     fs.mkdirSync(pathPrefix);
-  //   }
-  //   pathPrefix = props.REQUESTS_PATH + "getScoreSolutionResultsRequests/";
-  //   if (!fs.existsSync(pathPrefix)) {
-  //     fs.mkdirSync(pathPrefix);
-  //   }
-  // }
+  if (herald.isRequest) {
+    // onetime response
+    let pathPrefix = herald.REQUESTS_PATH + "scoreSolutionRequests/";
+    if (!fs.existsSync(pathPrefix)) {
+      fs.mkdirSync(pathPrefix);
+    }
+    pathPrefix = herald.REQUESTS_PATH + "getScoreSolutionResultsRequests/";
+    if (!fs.existsSync(pathPrefix)) {
+      fs.mkdirSync(pathPrefix);
+    }
+  }
 
   let promise = new Promise((fulfill, reject) => {
     let _fulfill = fulfill;

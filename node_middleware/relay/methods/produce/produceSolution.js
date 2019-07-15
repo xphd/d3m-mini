@@ -1,6 +1,4 @@
 const fs = require("fs");
-const appRoot = require("app-root-path");
-const evaluationConfig = require(appRoot + "/tufts_gt_wisc_configuration.json");
 
 const proto = require("../../proto.js");
 
@@ -9,14 +7,16 @@ const handleImageUrl = require("../../functions/handleImageUrl.js");
 
 const getProduceSolutionResults = require("./getProduceSolutionResults.js");
 
-function produceSolution(solution) {
+function produceSolution(herald, solution) {
   let solution_id = solution.solution_id;
   // console.log("produce solution called");
   let request = new proto.ProduceSolutionRequest();
   request.setFittedSolutionId(solution.fit.fit_id);
   let dataset_input = new proto.Value();
+
+  let dataset = herald.getDataset();
   dataset_input.setDatasetUri(
-    "file://" + handleImageUrl(evaluationConfig.dataset_schema)
+    "file://" + handleImageUrl(dataset.getDatasetPath() + "/datasetDoc.json")
   );
   request.setInputs(dataset_input);
   /*
@@ -28,16 +28,16 @@ function produceSolution(solution) {
   // leaving empty: repeated SolutionRunUser users = 5;
 
   // store request
-  if (props.isRequest) {
+  if (herald.isRequest) {
     let requestStr = JSON.stringify(request);
     let path =
-      props.REQUESTS_PATH + "produceSolutionRequests/" + solution_id + ".json";
+      herald.REQUESTS_PATH + "produceSolutionRequests/" + solution_id + ".json";
     fs.writeFileSync(path, requestStr);
   }
   //
 
   let promise = new Promise((fulfill, reject) => {
-    let client = props.client;
+    let client = herald.getClient();
     // console.log("produceSolutionRequest", request);
     client.produceSolution(request, (err, response) => {
       if (err) {
@@ -47,8 +47,8 @@ function produceSolution(solution) {
         getProduceSolutionResults(solution, request_id, fulfill, reject);
 
         // Added by Alex, for the purpose of Pipeline Visulization
-        if (props.isResponse) {
-          let pathPrefix = props.RESPONSES_PATH + "produceSolutionResponses/";
+        if (herald.isResponse) {
+          let pathPrefix = herald.RESPONSES_PATH + "produceSolutionResponses/";
           // let pathMid = produceSolutionRequestID;
           let pathMid = solution_id;
           let pathAffix = ".json";

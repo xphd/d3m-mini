@@ -1,17 +1,7 @@
-// this is a legacy which can be removed after modify controller/discovery_problem_set,  but not now. --alex
 const jsonfile = require("jsonfile");
-const appRoot = require("app-root-path");
 
-// import evaluationConfig
-const evaluationConfig = require(appRoot + "/tufts_gt_wisc_configuration.json");
-
-// import props
-const props = require("../props");
-
-const proto = require("../../proto.js");;
-const userAgentTA3 = props.userAgentTA3;
-const grpcVersion = props.grpcVersion;
-const allowed_val_types = props.allowed_val_types;
+const proto = require("../proto.js");
+const config = require("../config.js");
 
 // import mappings
 const metric_mappings = require("../mappings/metric_mappings");
@@ -19,16 +9,16 @@ const task_subtype_mappings = require("../mappings/task_subtype_mappings");
 const task_type_mappings = require("../mappings/task_type_mappings");
 
 // import functions
-const getMappedType = require("../functions/getMappedType");
-const handleImageUrl = require("../functions/handleImageUrl");
+const getMappedType = require("./getMappedType");
+const handleImageUrl = require("./handleImageUrl");
 
-problemSetSerachSolutionRequest = function(problemSet, dirPath) {
+function problemSetSerachSolutionRequest(herald, problemSet, dirPath) {
   var request = new proto.SearchSolutionsRequest();
 
-  request.setUserAgent(userAgentTA3);
-  request.setVersion(grpcVersion);
+  request.setUserAgent(config.userAgentTA3);
+  request.setVersion(config.grpcVersion);
+  request.setAllowedValueTypes(config.allowed_val_types);
   request.setTimeBoundSearch(0.25);
-  request.setAllowedValueTypes(allowed_val_types);
 
   var problem_desc = new proto.ProblemDescription();
   var problem = new proto.Problem();
@@ -77,9 +67,6 @@ problemSetSerachSolutionRequest = function(problemSet, dirPath) {
       next_target.setTargetIndex(thisTarget.targetIndex);
       next_target.setResourceId(thisTarget.resID);
       next_target.setColumnIndex(thisTarget.colIndex);
-      // console.log("--==")
-      // console.log(thisTarget.colName)
-      // console.log("==--")
       next_target.setColumnName(thisTarget.colName);
       targets.push(next_target);
     }
@@ -90,7 +77,13 @@ problemSetSerachSolutionRequest = function(problemSet, dirPath) {
   problem_desc.setInputs(inputs);
 
   var dataset_input = new proto.Value();
-  dataset_input.setDatasetUri(handleImageUrl(evaluationConfig.dataset_schema));
+  // dataset_input.setDatasetUri(handleImageUrl(evaluationConfig.dataset_schema));
+
+  let dataset = herald.getDataset();
+  dataset_input.setDatasetUri(
+    handleImageUrl(dataset.getDatasetPath() + "/datasetDoc.json")
+  );
+
   request.setInputs(dataset_input);
   request.setProblem(problem_desc);
 
@@ -109,6 +102,6 @@ problemSetSerachSolutionRequest = function(problemSet, dirPath) {
       );
     }
   });
-};
+}
 
 module.exports = problemSetSerachSolutionRequest;

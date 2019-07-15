@@ -17,12 +17,12 @@ function describeSolution(herald, solution) {
   request.setSolutionId(solution_id);
 
   // Added by Alex, for the purpose of Pipeline Visulization
-  // if (props.isResponse) {
-  //   let pathPrefix = props.RESPONSES_PATH + "describeSolutionResponses/";
-  //   if (!fs.existsSync(pathPrefix)) {
-  //     fs.mkdirSync(pathPrefix);
-  //   }
-  // }
+  if (herald.isResponse) {
+    let pathPrefix = herald.RESPONSES_PATH + "describeSolutionResponses/";
+    if (!fs.existsSync(pathPrefix)) {
+      fs.mkdirSync(pathPrefix);
+    }
+  }
 
   function fun(fulfill, reject) {
     let client = herald.getClient();
@@ -46,8 +46,8 @@ function describeSolution(herald, solution) {
         fulfill(herald, solution);
 
         // Added by Alex, for the purpose of Pipeline Visulization
-        if (props.isResponse) {
-          let pathPrefix = props.RESPONSES_PATH + "describeSolutionResponses/";
+        if (herald.isResponse) {
+          let pathPrefix = herald.RESPONSES_PATH + "describeSolutionResponses/";
           let pathMid = solution_id;
           let pathAffix = ".json";
           let path = pathPrefix + pathMid + pathAffix;

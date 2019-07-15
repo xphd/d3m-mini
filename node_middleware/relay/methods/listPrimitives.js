@@ -5,7 +5,7 @@ const proto = props.proto;
 function listPrimitives() {
   console.log("listPrimitives.js");
   let promise = new Promise((fulfill, reject) => {
-    let client = props.client;
+    let client = herald.getClient();
     let request = new proto.ListPrimitivesRequest();
     client.listPrimitives(request, (err, response) => {
       if (err) {

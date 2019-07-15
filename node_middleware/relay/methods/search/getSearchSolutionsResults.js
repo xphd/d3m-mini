@@ -1,15 +1,8 @@
 const fs = require("fs");
 
-// import variables
-// const props = require("../../props.js");
-// const proto = props.proto;
-
 const proto = require("../../proto.js");
 
 function getSearchSolutionsResults(herald, fulfill, reject) {
-  // const props = herald.props;
-  // const proto = props.proto;
-  // const sessionVar = props.sessionVar;
   // this is needed so that fulfill or reject can be calle later
   let _fulfill = fulfill;
   let _reject = reject;
@@ -17,21 +10,20 @@ function getSearchSolutionsResults(herald, fulfill, reject) {
   request.setSearchId(herald.search_id);
 
   // store request
-  // if (props.isRequest) {
-  //   let requestStr = JSON.stringify(request);
-  //   let path = props.REQUESTS_PATH + "GetSearchSolutionsResultsRequest.json";
-  //   fs.writeFileSync(path, requestStr);
-  // }
-  //
+  if (herald.isRequest) {
+    let requestStr = JSON.stringify(request);
+    let path = herald.REQUESTS_PATH + "GetSearchSolutionsResultsRequest.json";
+    fs.writeFileSync(path, requestStr);
+  }
 
   // Added by Alex, for the purpose of Pipeline Visulization
-  // if (props.isResponse) {
-  //   let pathPrefix =
-  //     props.RESPONSES_PATH + "getSearchSolutionsResultsResponses/";
-  //   if (!fs.existsSync(pathPrefix)) {
-  //     fs.mkdirSync(pathPrefix);
-  //   }
-  // }
+  if (herald.isResponse) {
+    let pathPrefix =
+      herald.RESPONSES_PATH + "getSearchSolutionsResultsResponses/";
+    if (!fs.existsSync(pathPrefix)) {
+      fs.mkdirSync(pathPrefix);
+    }
+  }
 
   let promise = new Promise((fulfill, reject) => {
     // console.log("starting get search solution results call");
@@ -75,24 +67,23 @@ function getSearchSolutionsResults(herald, fulfill, reject) {
       if (solution_id) {
         // let solution = { solution_id: solution_id, scores: {} };
         let solution = { solution_id: solution_id, finalOutput: "outputs.0" };
-        herald.setSolutions(new Map());
+        // herald.setSolutions(new Map());
         let solutions = herald.getSolutions();
         solutions.set(solution_id, solution);
 
         // console.log(sessionVar.solutions)
 
         // Added by Alex, for the purpose of Pipeline Visulization
-        // if (props.isResponse) {
-        //   let pathPrefix =
-        //     props.RESPONSES_PATH + "getSearchSolutionsResultsResponses/";
-        //   let pathMid = solution_id;
-        //   let pathAffix = ".json";
-        //   let path = pathPrefix + pathMid + pathAffix;
-        //   let responseStr = JSON.stringify(response);
-        //   fs.writeFileSync(path, responseStr);
-        // }
+        if (herald.isResponse) {
+          let pathPrefix =
+            herald.RESPONSES_PATH + "getSearchSolutionsResultsResponses/";
+          let pathMid = solution_id;
+          let pathAffix = ".json";
+          let path = pathPrefix + pathMid + pathAffix;
+          let responseStr = JSON.stringify(response);
+          fs.writeFileSync(path, responseStr);
+        }
 
-        // let index = Array.from(sessionVar.solutions.values()).length;
         // console.log("new solution:", index, solution_id);
         // );
       } else {

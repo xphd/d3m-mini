@@ -10,21 +10,20 @@ function getScoreSolutionResults(
   fulfill,
   reject
 ) {
-  // let solutions = props.sessionVar.solutions;
-  // let solution = solutions.get(solution_id);
   let _fulfill = fulfill;
   let _reject = reject;
   let request = new proto.GetScoreSolutionResultsRequest();
   request.setRequestId(scoreRequest_id);
   let client = herald.getClient();
-  // if (props.isRequest) {
-  //   let pathPrefix = props.REQUESTS_PATH + "getScoreSolutionResultsRequests/";
-  //   let pathMid = scoreRequest_id;
-  //   let pathAffix = ".json";
-  //   let path = pathPrefix + pathMid + pathAffix;
-  //   let responseStr = JSON.stringify(request);
-  //   fs.writeFileSync(path, responseStr);
-  // }
+
+  if (herald.isRequest) {
+    let pathPrefix = herald.REQUESTS_PATH + "getScoreSolutionResultsRequests/";
+    let pathMid = scoreRequest_id;
+    let pathAffix = ".json";
+    let path = pathPrefix + pathMid + pathAffix;
+    let responseStr = JSON.stringify(request);
+    fs.writeFileSync(path, responseStr);
+  }
 
   let call = client.getScoreSolutionResults(request);
   call.on("data", response => {
@@ -62,15 +61,15 @@ function getScoreSolutionResults(
     }
 
     // Added by Alex, for the purpose of Pipeline Visulization
-    // if (props.isResponse) {
-    //   let pathPrefix =
-    //     props.RESPONSES_PATH + "getScoreSolutionResultsResponses/";
-    //   let pathMid = scoreRequest_id;
-    //   let pathAffix = ".json";
-    //   let path = pathPrefix + pathMid + pathAffix;
-    //   let responseStr = JSON.stringify(response);
-    //   fs.writeFileSync(path, responseStr);
-    // }
+    if (herald.isResponse) {
+      let pathPrefix =
+        herald.RESPONSES_PATH + "getScoreSolutionResultsResponses/";
+      let pathMid = scoreRequest_id;
+      let pathAffix = ".json";
+      let path = pathPrefix + pathMid + pathAffix;
+      let responseStr = JSON.stringify(response);
+      fs.writeFileSync(path, responseStr);
+    }
   });
   call.on("error", err => {
     console.log("Error!getScoreSolutionResults: ", scoreRequest_id);

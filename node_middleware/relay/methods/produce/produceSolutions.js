@@ -10,7 +10,7 @@ function produceSolutions(herald) {
     console.log("produceSolutions", solution);
     if (solution.fit) {
       chain = chain.then(() => {
-        return produceSolution(solution);
+        return produceSolution(herald, solution);
       });
     } else {
       console.log("No produce:", solution.solution_id);
@@ -18,28 +18,28 @@ function produceSolutions(herald) {
   });
 
   // Added by Alex, for the purpose of Pipeline Visulization
-  // if (props.isResponse) {
-  //   let pathPrefix = props.RESPONSES_PATH + "produceSolutionResponses/";
-  //   if (!fs.existsSync(pathPrefix)) {
-  //     fs.mkdirSync(pathPrefix);
-  //   }
-  //   pathPrefix = props.RESPONSES_PATH + "getProduceSolutionResultsResponses/";
-  //   if (!fs.existsSync(pathPrefix)) {
-  //     fs.mkdirSync(pathPrefix);
-  //   }
-  // }
+  if (herald.isResponse) {
+    let pathPrefix = herald.RESPONSES_PATH + "produceSolutionResponses/";
+    if (!fs.existsSync(pathPrefix)) {
+      fs.mkdirSync(pathPrefix);
+    }
+    pathPrefix = herald.RESPONSES_PATH + "getProduceSolutionResultsResponses/";
+    if (!fs.existsSync(pathPrefix)) {
+      fs.mkdirSync(pathPrefix);
+    }
+  }
 
-  // if (props.isRequest) {
-  //   // onetime response
-  //   let pathPrefix = props.REQUESTS_PATH + "produceSolutionRequests/";
-  //   if (!fs.existsSync(pathPrefix)) {
-  //     fs.mkdirSync(pathPrefix);
-  //   }
-  //   pathPrefix = props.REQUESTS_PATH + "getProduceSolutionResultsRequests/";
-  //   if (!fs.existsSync(pathPrefix)) {
-  //     fs.mkdirSync(pathPrefix);
-  //   }
-  // }
+  if (herald.isRequest) {
+    // onetime response
+    let pathPrefix = herald.REQUESTS_PATH + "produceSolutionRequests/";
+    if (!fs.existsSync(pathPrefix)) {
+      fs.mkdirSync(pathPrefix);
+    }
+    pathPrefix = herald.REQUESTS_PATH + "getProduceSolutionResultsRequests/";
+    if (!fs.existsSync(pathPrefix)) {
+      fs.mkdirSync(pathPrefix);
+    }
+  }
 
   let promise = new Promise((fulfill, reject) => {
     chain

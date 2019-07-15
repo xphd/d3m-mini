@@ -2,7 +2,13 @@ const fs = require("fs");
 
 const proto = require("../../proto.js");
 
-function getProduceSolutionResults(solution, request_id, fulfill, reject) {
+function getProduceSolutionResults(
+  solution,
+  request_id,
+  fulfill,
+  reject,
+  herald
+) {
   // console.log("get produce solution called");
   let solution_id = solution.solution_id;
   let _fulfill = fulfill;
@@ -10,8 +16,9 @@ function getProduceSolutionResults(solution, request_id, fulfill, reject) {
   let request = new proto.GetProduceSolutionResultsRequest();
   request.setRequestId(request_id);
 
-  if (props.isRequest) {
-    let pathPrefix = props.REQUESTS_PATH + "getProduceSolutionResultsRequests/";
+  if (herald.isRequest) {
+    let pathPrefix =
+      herald.REQUESTS_PATH + "getProduceSolutionResultsRequests/";
     let pathMid = request_id;
     let pathAffix = ".json";
     let path = pathPrefix + pathMid + pathAffix;
@@ -20,7 +27,7 @@ function getProduceSolutionResults(solution, request_id, fulfill, reject) {
   }
 
   let promise = new Promise((fulfill, reject) => {
-    let client = props.client;
+    let client = herald.getClient();
     // console.log("GetProduceSolutionResultsRequest", request);
     let call = client.GetProduceSolutionResults(request);
     call.on("data", response => {
@@ -50,15 +57,15 @@ function getProduceSolutionResults(solution, request_id, fulfill, reject) {
               solution_id +
               " has not output file; removing from results set"
           );
-          sessionVar.solutions.delete(solution_id);
+          herald.getSolutions.delete(solution_id);
         }
         // console.log("solution.fit.outputCsv", solution.fit.outputCsv);
       }
 
       // Added by Alex, for the purpose of Pipeline Visulization
-      if (props.isResponse) {
+      if (herald.isResponse) {
         let pathPrefix =
-          props.RESPONSES_PATH + "getProduceSolutionResultsResponses/";
+          herald.RESPONSES_PATH + "getProduceSolutionResultsResponses/";
         let pathMid = request_id;
         let pathAffix = ".json";
         let path = pathPrefix + pathMid + pathAffix;

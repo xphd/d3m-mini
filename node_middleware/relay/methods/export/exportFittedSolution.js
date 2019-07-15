@@ -1,8 +1,10 @@
 const fs = require("fs");
 
 // import variables
-const props = require("../../props");
-const proto = props.proto;
+// const props = require("../../props");
+// const proto = props.proto;
+
+const proto = require("../../proto.js");
 
 function exportFittedSolution(herald, solution) {
   let solution_id = solution.solution_id;
@@ -14,9 +16,10 @@ function exportFittedSolution(herald, solution) {
   // request.setSolutionId(solution.fit.fit_id);
   request.setSolutionId(solution_id);
   request.setRank(rank);
-  let client = props.client;
+  let client = herald.getClient();
   client.solutionExport(request, response => {
     // no content specified for this message
+    // console.log(response);
     console.log("solution exported");
   });
 }

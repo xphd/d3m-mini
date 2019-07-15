@@ -1,17 +1,29 @@
 class Herald {
-  constructor() {
+  constructor(id, devSolutions = null) {
     // to be private, getters and setters
+    console.log("New herald created", id);
+    this.id = id; // new
+    this.devSolutions = devSolutions;
     this.dataset = null;
     this.problem = null;
     this.client = null;
-    this.port = null; // port for ta2
-    this.solutions = null;
+    this.port = "localhost:50054"; // port for ta2
+    this.solutions = new Map();
 
     // not to be private
     this.isConnected = false;
-    this.ta2Ident = "";
-    this.search_id = "";
+    this.ta2Ident = null; // string
+    this.search_id = null; // {}
     this.rankVar = 20;
+
+    this.isRequest = true;
+    this.isResponse = true;
+    this.REQUESTS_PATH = null; //""
+    this.RESPONSES_PATH = null; //""
+  }
+
+  getId() {
+    return this.id;
   }
 
   // getters
@@ -36,6 +48,9 @@ class Herald {
   }
 
   // setters
+  // setId(id) {
+  //   this.id = id;
+  // }
   setDataset(dataset) {
     this.dataset = dataset;
   }
@@ -76,7 +91,7 @@ module.exports = Herald;
 //         // NIST eval plan: only ranks 1-20 are considered (lower is better)
 //         rankVar: 20
 //       },
-//       // evaluationConfig: null,
+//
 
 //       // static
 //       proto: proto,

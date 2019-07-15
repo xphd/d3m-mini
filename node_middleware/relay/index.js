@@ -6,11 +6,24 @@
 // const proto = require("../protos/proto.js");
 // const grpcVersion = require("../protos/grpcVersion.js");
 
+exports.handleUrl = require("./functions/handleUrl.js");
+
 exports.connect = require("./functions/connect.js");
 
 exports.helloLoop = require("./methods/helloLoop.js");
 
 exports.searchSolutions = require("./methods/search/searchSolutions.js");
+
+exports.scoreSolutions = require("./methods/score/scoreSolutions.js");
+
+exports.describeSolutions = require("./methods/describe/describeSolutions.js");
+
+exports.fitSolutions = require("./methods/fit/fitSolutions.js");
+
+exports.produceSolutions = require("./methods/produce/produceSolutions.js");
+
+exports.exportFittedSolutions = require("./methods/export/exportFittedSolutions.js");
+
 // const endSearchSolutions = require("./methods/endSearchSolutions");
 // const listPrimitives = require("./methods/listPrimitives");
 // const searchSolutions = require("./methods/search/searchSolutions");
@@ -21,15 +34,15 @@ exports.searchSolutions = require("./methods/search/searchSolutions.js");
 // const exportFittedSolutions = require("./methods/export/exportFittedSolutions");
 
 // const problemSetSerachSolutionRequest = require("./methods_other/problemSetSerachSolutionRequest");
-// const setEvaluationConfig = require("./methods_other/setEvaluationConfig");
+
 // const props = require("./props");
 
-// const exportSolutions = require("./methods_molecule/exportSolutions");
-// const getAllSolutions = require("./methods_molecule/getAllSolutions");
-// const getDescriptions = require("./methods_molecule/getDescriptions");
-// const getScores = require("./methods_molecule/getScores");
-// const getFitSolutions = require("./methods_molecule/getFitSolutions");
-// const getProduceSolutions = require("./methods_molecule/getProduceSolutions");
+exports.exportSolutions = require("./methods_molecule/exportSolutions");
+exports.getAllSolutions = require("./methods_molecule/getAllSolutions");
+exports.getDescriptions = require("./methods_molecule/getDescriptions");
+exports.getScores = require("./methods_molecule/getScores");
+exports.getFitSolutions = require("./methods_molecule/getFitSolutions");
+exports.getProduceSolutions = require("./methods_molecule/getProduceSolutions");
 
 // class Herald {
 //   constructor() {
@@ -49,7 +62,7 @@ exports.searchSolutions = require("./methods/search/searchSolutions.js");
 //         // NIST eval plan: only ranks 1-20 are considered (lower is better)
 //         rankVar: 20
 //       },
-//       // evaluationConfig: null,
+//
 
 //       // static
 //       proto: proto,

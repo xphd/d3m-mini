@@ -9,7 +9,7 @@ function endSearchSolutions(sessionVar) {
     console.log("end search solutions for search", sessionVar.searchID);
     let request = new proto.EndSearchSolutionsRequest();
     request.setSearchId(sessionVar.searchID);
-    let client = props.client;
+    let client = herald.getClient();
     client.endSearchSolutions(request, (err, response) => {
       if (err) {
         reject(err);

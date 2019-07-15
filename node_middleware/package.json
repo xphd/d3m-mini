@@ -4,7 +4,7 @@
   "description": "",
   "main": "node_backend_app.js",
   "scripts": {
-    "serve": "babel-node backend.js",
+    "serve": "node backend.js",
     "start": "node_backend_app.js",
     "server": "nodemon node_backend_app.js"
   },
