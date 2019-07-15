@@ -1,18 +1,18 @@
 const fs = require("fs");
 
 // import variables
-const props = require("../props");
-const proto = props.proto;
+const proto = require("../proto.js");
 
-function exportSolutions(solution_id, rankStr) {
+function exportSolutions(solution_id, rankStr, herald) {
   console.log("export fitted solution", solution_id);
-
+  // let rank = sessionVar.rankVar;
+  // sessionVar.rankVar = sessionVar.rankVar - 0.00000001;
   let rank = parseFloat(rankStr);
   let solutionExportRequest = new proto.SolutionExportRequest();
   solutionExportRequest.setSolutionId(solution_id);
   solutionExportRequest.setRank(rank);
   console.log("solutionExportRequest", solutionExportRequest);
-  let client = props.client;
+  let client = herald.getClient();
   client.solutionExport(solutionExportRequest, function(
     solutionExportResponse
   ) {
@@ -20,9 +20,9 @@ function exportSolutions(solution_id, rankStr) {
     console.log("solution exported");
 
     // Added by Alex, for the purpose of Pipeline Visulization
-    let path = "responses/solutionExportResponse.json";
-    let responseStr = JSON.stringify(solutionExportResponse);
-    fs.writeFileSync(path, responseStr);
+    // let path = "responses/solutionExportResponse.json";
+    // let responseStr = JSON.stringify(solutionExportResponse);
+    // fs.writeFileSync(path, responseStr);
   });
 }
 

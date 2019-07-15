@@ -1,15 +1,12 @@
 const fs = require("fs");
-const appRoot = require("app-root-path");
-const evaluationConfig = require(appRoot + "/tufts_gt_wisc_configuration.json");
 
 // import variables
-const props = require("../props");
-const proto = props.proto;
+const proto = require("../proto.js");
 
 // import functions
 const handleImageUrl = require("../functions/handleImageUrl.js");
 
-function getFitSolutions(solution_ids_selected) {
+function getFitSolutions(solution_ids_selected, herald) {
   console.log("fitSolutions called");
 
   // Added by Alex, for the purpose of Pipeline Visulization
@@ -27,7 +24,7 @@ function getFitSolutions(solution_ids_selected) {
   let chain = Promise.resolve();
   solution_ids_selected.forEach(id => {
     chain = chain.then(() => {
-      return getFitSolution(id);
+      return getFitSolution(id, herald);
     });
   });
 
@@ -44,14 +41,16 @@ function getFitSolutions(solution_ids_selected) {
   });
 }
 
-function getFitSolution(solution_id) {
+function getFitSolution(solution_id, herald) {
   // TODO: fix function
   let fitSolutionRequest = new proto.FitSolutionRequest();
-  let solution = props.sessionVar.solutions.get(solution_id);
+
+  let solution = herald.getSolutions().get(solution_id);
   fitSolutionRequest.setSolutionId(solution_id);
   var dataset_input = new proto.Value();
+  let dataset = herald.getDataset();
   dataset_input.setDatasetUri(
-    "file://" + handleImageUrl(evaluationConfig.dataset_schema)
+    "file://" + handleImageUrl(dataset.getDatasetPath() + "/datasetDoc.json")
   );
   fitSolutionRequest.setInputs(dataset_input);
 
@@ -60,7 +59,7 @@ function getFitSolution(solution_id) {
   fitSolutionRequest.setExposeValueTypes([proto.ValueType.CSV_URI]);
   // leave empty: repeated SolutionRunUser users = 5;
   return new Promise(function(fulfill, reject) {
-    const client = props.client;
+    let client = herald.getClient();
     client.fitSolution(fitSolutionRequest, function(err, fitSolutionResponse) {
       if (err) {
         reject(err);
@@ -94,7 +93,7 @@ function getFitSolutionResults(
   getFitSolutionResultsRequest.setRequestId(fitSolutionResponseID);
 
   return new Promise(function(fulfill, reject) {
-    let client = props.client;
+    let client = herald.getClient();
     let call = client.getFitSolutionResults(getFitSolutionResultsRequest);
     call.on("data", function(response) {
       // console.log("response", response);

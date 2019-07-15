@@ -1,8 +1,7 @@
 // import variables
-const props = require("../props");
 
-function getAllSolutions() {
-  let solutions = props.sessionVar.solutions;
+function getAllSolutions(herald) {
+  let solutions = herald.getSolutions();
   return solutions;
 }
 

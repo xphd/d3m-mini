@@ -1,19 +1,15 @@
 const fs = require("fs");
-const appRoot = require("app-root-path");
-const evaluationConfig = require(appRoot + "/tufts_gt_wisc_configuration.json");
 
 // import variables
-const props = require("../props");
-const proto = props.proto;
-
+const proto = require("../proto.js");
 // import functions
 const handleImageUrl = require("../functions/handleImageUrl.js");
 
-function getProduceSolutions(solution_ids_selected) {
+function getProduceSolutions(solution_ids_selected, herald) {
   let chain = Promise.resolve();
   solution_ids_selected.forEach(solution_id => {
     chain = chain.then(() => {
-      return getProduceSolution(solution_id);
+      return getProduceSolution(solution_id, herald);
     });
   });
 
@@ -43,9 +39,10 @@ function getProduceSolutions(solution_ids_selected) {
   return promise;
 }
 
-function getProduceSolution(solution_id) {
+function getProduceSolution(solution_id, herald) {
   // console.log("produce solution called");
-  let solution = props.sessionVar.solutions.get(solution_id);
+  let solutions = herald.getSolutions();
+  let solution = solutions.get(solution_id);
   let produceSolutionRequest = new proto.ProduceSolutionRequest();
 
   console.log("solution_id is:", solution_id);
@@ -57,8 +54,9 @@ function getProduceSolution(solution_id) {
   produceSolutionRequest.setFittedSolutionId(fit_id);
 
   let dataset_input = new proto.Value();
+  let dataset = herald.getDataset();
   dataset_input.setDatasetUri(
-    "file://" + handleImageUrl(evaluationConfig.dataset_schema)
+    "file://" + handleImageUrl(dataset.getDatasetPath() + "/datasetDoc.json")
   );
   produceSolutionRequest.setInputs(dataset_input);
   /*
@@ -71,7 +69,7 @@ function getProduceSolution(solution_id) {
   // leaving empty: repeated SolutionRunUser users = 5;
 
   let promise = new Promise((fulfill, reject) => {
-    const client = props.client;
+    let client = herald.getClient();
     client.produceSolution(
       produceSolutionRequest,
       (err, produceSolutionResponse) => {
@@ -79,7 +77,13 @@ function getProduceSolution(solution_id) {
           reject(err);
         } else {
           let request_id = produceSolutionResponse.request_id;
-          getProduceSolutionResults(solution_id, request_id, fulfill, reject);
+          getProduceSolutionResults(
+            solution_id,
+            request_id,
+            fulfill,
+            reject,
+            herald
+          );
 
           // Added by Alex, for the purpose of Pipeline Visulization
           if (props.isResponse) {
@@ -98,9 +102,16 @@ function getProduceSolution(solution_id) {
   return promise;
 }
 
-function getProduceSolutionResults(solution_id, request_id, fulfill, reject) {
-  let solutions = props.sessionVar.solutions;
+function getProduceSolutionResults(
+  solution_id,
+  request_id,
+  fulfill,
+  reject,
+  herald
+) {
+  let solutions = herald.getSolutions();
   let solution = solutions.get(solution_id);
+
   // console.log("get produce solution called");
   let _fulfill = fulfill;
   let _reject = reject;
@@ -108,7 +119,7 @@ function getProduceSolutionResults(solution_id, request_id, fulfill, reject) {
   getProduceSolutionResultsRequest.setRequestId(request_id);
 
   let promise = new Promise((fulfill, reject) => {
-    const client = props.client;
+    let client = herald.getClient();
     let call = client.GetProduceSolutionResults(
       getProduceSolutionResultsRequest
     );

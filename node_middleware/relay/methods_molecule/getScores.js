@@ -1,11 +1,8 @@
 const fs = require("fs");
 const _ = require("lodash");
-const appRoot = require("app-root-path");
-const evaluationConfig = require(appRoot + "/tufts_gt_wisc_configuration.json");
 
 // import variables
-const props = require("../props");
-const proto = props.proto;
+const proto = require("../../proto.js");
 
 // import mappings
 const metric_mappings = require("../mappings/metric_mappings");
@@ -14,12 +11,12 @@ const metric_mappings = require("../mappings/metric_mappings");
 const getMappedType = require("../functions/getMappedType");
 const handleImageUrl = require("../functions/handleImageUrl");
 
-function getScores(solution_ids_selected, metrics) {
+function getScores(solution_ids_selected, metrics, herald) {
   console.log("getScores");
   let chain = Promise.resolve();
 
-  if (props.isResponse) {
-    let pathPrefix = props.RESPONSES_PATH + "getScoreResponses/";
+  if (herald.isResponse) {
+    let pathPrefix = herald.RESPONSES_PATH + "getScoreResponses/";
     if (!fs.existsSync(pathPrefix)) {
       fs.mkdirSync(pathPrefix);
     }
@@ -28,7 +25,7 @@ function getScores(solution_ids_selected, metrics) {
   for (let i = 0; i < solution_ids_selected.length; i++) {
     let solution_id = solution_ids_selected[i];
     chain = chain.then(() => {
-      return getScore(solution_id, metrics);
+      return getScore(solution_id, metrics, herald);
     });
   }
 
@@ -45,14 +42,16 @@ function getScores(solution_ids_selected, metrics) {
   });
 }
 
-function getScore(solution_id, metrics) {
+function getScore(solution_id, metrics, herald) {
   console.log("scoring solution with id", solution_id);
   let scoreSolutionRequest = new proto.ScoreSolutionRequest();
   scoreSolutionRequest.setSolutionId(solution_id);
 
   let dataset_input = new proto.Value();
+
+  let dataset = herald.getDataset();
   dataset_input.setDatasetUri(
-    "file://" + handleImageUrl(evaluationConfig.dataset_schema)
+    "file://" + handleImageUrl(dataset.getDatasetPath() + "/datasetDoc.json")
   );
   scoreSolutionRequest.setInputs(dataset_input);
 
@@ -74,7 +73,7 @@ function getScore(solution_id, metrics) {
   scoreSolutionRequest.setConfiguration(scoringConfiguration);
 
   return new Promise(function(fulfill, reject) {
-    let client = props.client;
+    let client = herald.getClient();
     client.scoreSolution(scoreSolutionRequest, function(
       err,
       scoreSolutionResponse
@@ -94,12 +93,12 @@ function getScoresResponse(solution_id, scoreRequestID, fulfill, reject) {
   let _reject = reject;
   let getScoreSolutionResultsRequest = new proto.GetScoreSolutionResultsRequest();
   getScoreSolutionResultsRequest.setRequestId(scoreRequestID);
-  let client = props.client;
+  let client = props.getClient();
   let call = client.getScoreSolutionResults(getScoreSolutionResultsRequest);
   call.on("data", function(response) {
     // Added by Alex, for the purpose of Pipeline Visulization
-    if (props.isResponse) {
-      let pathPrefix = props.RESPONSES_PATH + "getScoreResponses/";
+    if (herald.isResponse) {
+      let pathPrefix = herald.RESPONSES_PATH + "getScoreResponses/";
       let pathMid = solution_id;
       let pathAffix = ".json";
       let path = pathPrefix + pathMid + pathAffix;
@@ -124,7 +123,7 @@ function getScoresResponse(solution_id, scoreRequestID, fulfill, reject) {
       // console.log("METRICS", metrics);
       // console.log("VALUES", values);
 
-      let solution = props.sessionVar.solutions.get(solution_id);
+      let solution = herald.getSolutions().get(solution_id);
       solution.scores = {};
       for (let i = 0; i < metrics.length; i++) {
         // solution.scores = { f1Macro: _.mean(values) };

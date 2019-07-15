@@ -1,19 +1,17 @@
 const fs = require("fs");
 
 // import variables
-const props = require("../props");
-const proto = props.proto;
-const sessionVar = props.sessionVar;
+const proto = require("../proto.js");
 
-function getDescriptions(solution_ids_selected) {
+function getDescriptions(solution_ids_selected, herald) {
   console.log("describeSolutions called");
-  // let solutions = Array.from(sessionVar.solutions.values());
+
   let solution_ids = solution_ids_selected;
   let chain = Promise.resolve();
   for (let i = 0; i < solution_ids.length; i++) {
     let solution_id = solution_ids[i];
     chain = chain.then(() => {
-      return getDescription(solution_id);
+      return getDescription(solution_id, herald);
     });
   }
   return new Promise(function(fulfill, reject) {
@@ -21,7 +19,7 @@ function getDescriptions(solution_ids_selected) {
     let _reject = reject;
     chain
       .then(function(res) {
-        _fulfill(sessionVar);
+        _fulfill(herald);
       })
       .catch(function(err) {
         _reject(err);
@@ -29,8 +27,8 @@ function getDescriptions(solution_ids_selected) {
   });
 }
 
-function getDescription(solution_id) {
-  let solution = props.sessionVar.solutions.get(solution_id);
+function getDescription(solution_id, herald) {
+  let solution = herald.getSolutions().get(solution_id);
 
   // doing the shortcut now and see how far this takes us
   console.log("WARNING: TAKING THE DESCRIBE-SOLUTION SHORTCUT FOR NOW");
@@ -50,7 +48,7 @@ function getDescription(solution_id) {
   }
 
   return new Promise(function(fulfill, reject) {
-    let client = props.client;
+    let client = herald.getClient();
 
     client.describeSolution(describeSolutionRequest, function(
       err,
