@@ -2,28 +2,28 @@
   <div>
     <h1>Score Solution</h1>
     <button @click="helloSearch">Hello and Search Solutions</button>
-    <br>
+    <br />
     <button @click="getAllSolutions">GetAllSolutions</button>
     <button @click="scoreSelectedSolutions">scoreSelectedSolutions</button>
     <button @click="describeSolutions">describeSolutions</button>
     <button @click="fitSolutions">fitSolutions</button>
     <button @click="produceSolutions">produceSolutions</button>
     <button @click="exportSolutions">exportSolutions</button>
-    <input v-model="exportID">
-    <input v-model="rank">
+    <input v-model="exportID" />
+    <input v-model="rank" />
     <div>
       <li v-for="(solutionID, index) in solutionIDs" :key="index">
-        <input type="checkbox" :value="solutionID" v-model="solutionIDs_selected">
+        <input type="checkbox" :value="solutionID" v-model="solutionIDs_selected" />
         {{solutionID}}
       </li>
       <p>{{solutionIDs_selected}}</p>
 
-      <input v-model="solutionID_selected">
+      <input v-model="solutionID_selected" />
       <button @click="describeSolution">describeSolution</button>
     </div>
     <div>
       <li v-for="(metric, index) in metrics" :key="index">
-        <input type="checkbox" :value="metric" v-model="metrics_selected">
+        <input type="checkbox" :value="metric" v-model="metrics_selected" />
         {{metric}}
       </li>
       <p>{{metrics_selected}}</p>
@@ -38,20 +38,20 @@ export default {
     return {
       solutionIDs: [],
       solutionIDs_selected: [],
-      metrics_selected: ["rootMeanSquaredError"],
-      exportID:"",
-      rank:0.0,
+      metrics_selected: ["f1Macro"],
+      exportID: "",
+      rank: 0.0,
       metrics: [
         // "accuracy",
         // "recall",
         // "f1",
         // "f1Micro",
-        // "f1Macro"
+        "f1Macro"
         // "rocAuc",
         // "rocAucMicro",
         // "rocAucMacro",
         // "meanSquaredError",
-        "rootMeanSquaredError",
+        // "rootMeanSquaredError",
         // "rootMeanSquareErrorAvg",
         // "meanAbsoluteError",
         // "rSquared",
