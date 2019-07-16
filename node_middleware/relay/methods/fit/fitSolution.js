@@ -13,8 +13,9 @@ function fitSolution(herald, solution) {
   let request = new proto.FitSolutionRequest();
   request.setSolutionId(solution_id);
   let dataset_input = new proto.Value();
+  let dataset = herald.getDataset();
   dataset_input.setDatasetUri(
-    "file://" + handleImageUrl(herald.getDataset().getDatasetPath())
+    "file://" + handleImageUrl(dataset.getDatasetPath() + "/datasetDoc.json")
   );
   request.setInputs(dataset_input);
   request.setExposeOutputs(solution.finalOutput);

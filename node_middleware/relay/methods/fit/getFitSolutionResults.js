@@ -24,6 +24,10 @@ function getFitSolutionResults(herald, solution, request_id, fulfill, reject) {
 
     let call = client.getFitSolutionResults(request);
     call.on("data", response => {
+      console.log(">>>------->");
+      console.log("getFitSolutionResultsResponses");
+      console.log(response);
+      console.log("<-------<<<");
       // console.log("getfitSolutionResultsResponse", getFitSolutionResultsResponse);
       // console.log("solution_id:", solution.solution_id);
       // console.log("state:", response.progress.state);

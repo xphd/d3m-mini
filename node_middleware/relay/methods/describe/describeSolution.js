@@ -6,10 +6,10 @@ const proto = require("../../proto.js");
 function describeSolution(herald, solution) {
   // doing the shortcut now and see how far this takes us
   console.log("WARNING: TAKING THE DESCRIBE-SOLUTION SHORTCUT FOR NOW");
-  // return new Promise(function(fulfill, reject) {
-  //   solution.finalOutput = "outputs.0";
-  //   fulfill(solution);
-  // });
+  return new Promise(function(fulfill, reject) {
+    solution.finalOutput = "outputs.0";
+    fulfill(solution);
+  });
   // THIS DOES NOT GET EXECUTED FOR NOW
   let solution_id = solution.solution_id;
   console.log("request describe solution with id", solution_id);

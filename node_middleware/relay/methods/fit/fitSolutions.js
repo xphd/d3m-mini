@@ -7,13 +7,6 @@ function fitSolutions(herald) {
   let solutions = herald.getSolutions();
   let solutions_array = Array.from(solutions.values());
 
-  let chain = Promise.resolve();
-  solutions_array.forEach(solution => {
-    chain = chain.then(() => {
-      return fitSolution(herald, solution);
-    });
-  });
-
   // Added by Alex, for the purpose of Pipeline Visulization
   if (herald.isResponse) {
     let pathPrefix = herald.RESPONSES_PATH + "fitSolutionResponses/";
@@ -37,6 +30,13 @@ function fitSolutions(herald) {
       fs.mkdirSync(pathPrefix);
     }
   }
+  let chain = Promise.resolve();
+  solutions_array.forEach(solution => {
+    chain = chain.then(() => {
+      return fitSolution(herald, solution);
+    });
+  });
+
   function fun(fulfill, reject) {
     chain
       .then(() => {
