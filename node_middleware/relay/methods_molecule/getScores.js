@@ -2,7 +2,7 @@ const fs = require("fs");
 const _ = require("lodash");
 
 // import variables
-const proto = require("../../proto.js");
+const proto = require("../proto.js");
 
 // import mappings
 const metric_mappings = require("../mappings/metric_mappings");
@@ -82,18 +82,24 @@ function getScore(solution_id, metrics, herald) {
         reject(err);
       } else {
         let scoreRequestID = scoreSolutionResponse.request_id;
-        getScoresResponse(solution_id, scoreRequestID, fulfill, reject);
+        getScoresResponse(solution_id, scoreRequestID, fulfill, reject, herald);
       }
     });
   });
 }
 
-function getScoresResponse(solution_id, scoreRequestID, fulfill, reject) {
+function getScoresResponse(
+  solution_id,
+  scoreRequestID,
+  fulfill,
+  reject,
+  herald
+) {
   let _fulfill = fulfill;
   let _reject = reject;
   let getScoreSolutionResultsRequest = new proto.GetScoreSolutionResultsRequest();
   getScoreSolutionResultsRequest.setRequestId(scoreRequestID);
-  let client = props.getClient();
+  let client = herald.getClient();
   let call = client.getScoreSolutionResults(getScoreSolutionResultsRequest);
   call.on("data", function(response) {
     // Added by Alex, for the purpose of Pipeline Visulization

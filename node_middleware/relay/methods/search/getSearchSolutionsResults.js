@@ -27,13 +27,13 @@ function getSearchSolutionsResults(herald, fulfill, reject) {
 
   let promise = new Promise((fulfill, reject) => {
     // console.log("starting get search solution results call");
-    // if (sessionVar.ta2Ident.user_agent.startsWith("nyu_ta2")) {
+    // if (.ta2Ident.user_agent.startsWith("nyu_ta2")) {
     //   let timeBoundInMinutes = 1;
     //   console.log("NYU detected; making sure they stop sending solutions after a " + timeBoundInMinutes + "min time bound");
     /*
         setTimeout(function() {
           console.log("That's enough nyu! Calling endSearchSolutions");
-          obj.endSearchSolutions(sessionVar);
+          obj.endSearchSolutions();
         }, timeBoundInMinutes * 60 * 1000 * 5);
         */
     // setTimeout needs time in ms
@@ -61,7 +61,7 @@ function getSearchSolutionsResults(herald, fulfill, reject) {
       let solution_id = response.solution_id;
       // console.log("solution_id:",solution_id)
 
-      // if ( (!sessionVar.ta2Ident.user_agent.startsWith("nyu_ta2")) ||
+      // if ( (!.ta2Ident.user_agent.startsWith("nyu_ta2")) ||
       // ignore of internal_score is NaN or 0 for nyu
       //      (getSearchSolutionsResultsResponse.internal_score)) {
       if (solution_id) {
@@ -71,7 +71,7 @@ function getSearchSolutionsResults(herald, fulfill, reject) {
         let solutions = herald.getSolutions();
         solutions.set(solution_id, solution);
 
-        // console.log(sessionVar.solutions)
+        // console.log(.solutions)
 
         // Added by Alex, for the purpose of Pipeline Visulization
         if (herald.isResponse) {

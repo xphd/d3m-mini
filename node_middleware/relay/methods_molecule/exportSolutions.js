@@ -5,8 +5,8 @@ const proto = require("../proto.js");
 
 function exportSolutions(solution_id, rankStr, herald) {
   console.log("export fitted solution", solution_id);
-  // let rank = sessionVar.rankVar;
-  // sessionVar.rankVar = sessionVar.rankVar - 0.00000001;
+  // let rank = .rankVar;
+  // .rankVar = .rankVar - 0.00000001;
   let rank = parseFloat(rankStr);
   let solutionExportRequest = new proto.SolutionExportRequest();
   solutionExportRequest.setSolutionId(solution_id);

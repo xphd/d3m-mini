@@ -16,6 +16,8 @@ class Herald {
     this.search_id = null; // {}
     this.rankVar = 20;
 
+    this.searchEnded = null; //true
+
     this.isRequest = true;
     this.isResponse = true;
     this.REQUESTS_PATH = null; //""
@@ -77,11 +79,11 @@ module.exports = Herald;
 //   constructor() {
 //     this.session = null;
 //     // properties
-//     this.props = {
+//     this. = {
 //       //   dynamic
 //       client: null,
 
-//       sessionVar: {
+//       : {
 //         search_id: "",
 //         ta2Ident: null,
 //         connected: false,

@@ -10,12 +10,12 @@ function getFitSolutions(solution_ids_selected, herald) {
   console.log("fitSolutions called");
 
   // Added by Alex, for the purpose of Pipeline Visulization
-  if (props.isResponse) {
-    let pathPrefix = props.RESPONSES_PATH + "fitSolutionResponses/";
+  if (herald.isResponse) {
+    let pathPrefix = herald.RESPONSES_PATH + "fitSolutionResponses/";
     if (!fs.existsSync(pathPrefix)) {
       fs.mkdirSync(pathPrefix);
     }
-    pathPrefix = props.RESPONSES_PATH + "getFitSolutionResultsResponses/";
+    pathPrefix = herald.RESPONSES_PATH + "getFitSolutionResultsResponses/";
     if (!fs.existsSync(pathPrefix)) {
       fs.mkdirSync(pathPrefix);
     }
@@ -42,10 +42,11 @@ function getFitSolutions(solution_ids_selected, herald) {
 }
 
 function getFitSolution(solution_id, herald) {
+  let solutions = herald.getSolutions();
+  let solution = solutions.get(solution_id);
   // TODO: fix function
   let fitSolutionRequest = new proto.FitSolutionRequest();
 
-  let solution = herald.getSolutions().get(solution_id);
   fitSolutionRequest.setSolutionId(solution_id);
   var dataset_input = new proto.Value();
   let dataset = herald.getDataset();
@@ -65,11 +66,17 @@ function getFitSolution(solution_id, herald) {
         reject(err);
       } else {
         let fitSolutionResponseID = fitSolutionResponse.request_id;
-        getFitSolutionResults(solution, fitSolutionResponseID, fulfill, reject);
+        getFitSolutionResults(
+          solution,
+          fitSolutionResponseID,
+          fulfill,
+          reject,
+          herald
+        );
 
         // Added by Alex, for the purpose of Pipeline Visulization
-        if (props.isResponse) {
-          let pathPrefix = props.RESPONSES_PATH + "fitSolutionResponses/";
+        if (herald.isResponse) {
+          let pathPrefix = herald.RESPONSES_PATH + "fitSolutionResponses/";
           let pathMid = solution_id;
           let pathAffix = ".json";
           let path = pathPrefix + pathMid + pathAffix;
@@ -85,7 +92,8 @@ function getFitSolutionResults(
   solution,
   fitSolutionResponseID,
   fulfill,
-  reject
+  reject,
+  herald
 ) {
   let _fulfill = fulfill;
   let _reject = reject;
@@ -116,9 +124,9 @@ function getFitSolutionResults(
         // console.log("solution is: ", solution);
 
         // Added by Alex, for the purpose of Pipeline Visulization
-        if (props.isResponse) {
+        if (herald.isResponse) {
           let pathPrefix =
-            props.RESPONSES_PATH + "getFitSolutionResultsResponses/";
+            herald.RESPONSES_PATH + "getFitSolutionResultsResponses/";
           let pathMid = solution.solution_id;
           let pathAffix = ".json";
           let path = pathPrefix + pathMid + pathAffix;

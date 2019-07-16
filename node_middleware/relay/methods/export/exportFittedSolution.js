@@ -1,14 +1,12 @@
 const fs = require("fs");
 
 // import variables
-// const props = require("../../props");
-// const proto = props.proto;
 
 const proto = require("../../proto.js");
 
 function exportFittedSolution(herald, solution) {
   let solution_id = solution.solution_id;
-  // let sessionVar = props.sessionVar;
+
   console.log("export fitted solution", solution_id);
   let rank = herald.rankVar;
   herald.rankVar = herald.rankVar - 0.00000001;

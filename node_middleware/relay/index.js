@@ -35,24 +35,22 @@ exports.exportFittedSolutions = require("./methods/export/exportFittedSolutions.
 
 // const problemSetSerachSolutionRequest = require("./methods_other/problemSetSerachSolutionRequest");
 
-// const props = require("./props");
-
 exports.exportSolutions = require("./methods_molecule/exportSolutions");
 exports.getAllSolutions = require("./methods_molecule/getAllSolutions");
 exports.getDescriptions = require("./methods_molecule/getDescriptions");
-exports.getScores = require("./methods_molecule/getScores");
 exports.getFitSolutions = require("./methods_molecule/getFitSolutions");
 exports.getProduceSolutions = require("./methods_molecule/getProduceSolutions");
+exports.getScores = require("./methods_molecule/getScores");
 
 // class Herald {
 //   constructor() {
 //     this.session = null;
 //     // properties
-//     this.props = {
+//     this. = {
 //       //   dynamic
 //       client: null,
 
-//       sessionVar: {
+//       : {
 //         search_id: "",
 //         ta2Ident: null,
 //         connected: false,
@@ -94,7 +92,6 @@ exports.getProduceSolutions = require("./methods_molecule/getProduceSolutions");
 
 // this.problemSetSerachSolutionRequest = problemSetSerachSolutionRequest;
 // this.setEvaluationConfig = setEvaluationConfig;
-// this.sessionVar = props.sessionVar;
 
 // this.exportSolutions = exportSolutions;
 // this.getAllSolutions = getAllSolutions;
@@ -113,9 +110,6 @@ exports.getProduceSolutions = require("./methods_molecule/getProduceSolutions");
 //     return this.session;
 //   }
 
-//   // getProps() {
-//   //   return this.props;
-//   // }
 // }
 
 // module.exports = Herald;

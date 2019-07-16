@@ -16,7 +16,7 @@ const config = require("../../config.js");
 
 function searchSolutions(herald) {
   console.log("searchSolutions begin");
-  let datasetH = herald.getDataset();
+  let dataset = herald.getDataset();
   let problemH = herald.getProblem();
 
   let problemSchema = problemH.getProblemSchema();
@@ -118,7 +118,7 @@ function searchSolutions(herald) {
   var dataset_input = new proto.Value();
 
   dataset_input.setDatasetUri(
-    "file://" + handleImageUrl(datasetH.getDatasetPath() + "/datasetDoc.json")
+    "file://" + handleImageUrl(dataset.getDatasetPath() + "/datasetDoc.json")
   );
   request.setInputs(dataset_input);
   request.setProblem(problem_desc);
@@ -147,7 +147,7 @@ function searchSolutions(herald) {
         }
 
         herald.search_id = response.search_id;
-        // setTimeout(() => getSearchSolutionsResults(sessionVar, fulfill, reject), 180000);
+        // setTimeout(() => getSearchSolutionsResults(, fulfill, reject), 180000);
         getSearchSolutionsResults(herald, fulfill, reject);
       }
     });

@@ -1,6 +1,5 @@
 // import variables
-const props = require("../props");
-const proto = props.proto;
+const proto = require("../proto.js");
 
 function listPrimitives() {
   console.log("listPrimitives.js");

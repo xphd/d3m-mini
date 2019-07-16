@@ -1,21 +1,20 @@
 const fs = require("fs");
 
 // import variables
-const props = require("../props");
-const proto = props.proto;
+const proto = require("../proto");
 
-function endSearchSolutions(sessionVar) {
+function endSearchSolutions(herald) {
   let promise = new Promise((fulfill, reject) => {
-    console.log("end search solutions for search", sessionVar.searchID);
+    console.log("end search solutions for search", herald.search_id);
     let request = new proto.EndSearchSolutionsRequest();
-    request.setSearchId(sessionVar.searchID);
+    request.setSearchId(herald.search_id);
     let client = herald.getClient();
     client.endSearchSolutions(request, (err, response) => {
       if (err) {
         reject(err);
       } else {
-        sessionVar.searchEnded = true;
-        fulfill(sessionVar);
+        herald.searchEnded = true;
+        fulfill(herald);
       }
     });
   });

@@ -28,7 +28,8 @@ function getDescriptions(solution_ids_selected, herald) {
 }
 
 function getDescription(solution_id, herald) {
-  let solution = herald.getSolutions().get(solution_id);
+  let solutions = herald.getSolutions();
+  let solution = solutions.get(solution_id);
 
   // doing the shortcut now and see how far this takes us
   console.log("WARNING: TAKING THE DESCRIBE-SOLUTION SHORTCUT FOR NOW");

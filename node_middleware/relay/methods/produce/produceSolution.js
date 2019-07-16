@@ -20,7 +20,7 @@ function produceSolution(herald, solution) {
   );
   request.setInputs(dataset_input);
   /*
-      if (sessionVar.ta2Ident.user_agent === "cmu_ta2") {
+      if (.ta2Ident.user_agent === "cmu_ta2") {
         produceSolutionRequest.setExposeOutputs("");
       }*/
   request.setExposeOutputs(solution.finalOutput);
