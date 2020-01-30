@@ -16,7 +16,7 @@ function produceSolution(herald, solution) {
 
   let dataset = herald.getDataset();
   dataset_input.setDatasetUri(
-    "file://" + handleImageUrl(dataset.getDatasetPath() + "/datasetDoc.json")
+    "file:///" + handleImageUrl(dataset.getDatasetPath() + "/datasetDoc.json")
   );
   request.setInputs(dataset_input);
   /*
@@ -44,7 +44,13 @@ function produceSolution(herald, solution) {
         reject(err);
       } else {
         let request_id = response.request_id;
-        getProduceSolutionResults(solution, request_id, fulfill, reject);
+        getProduceSolutionResults(
+          herald,
+          solution,
+          request_id,
+          fulfill,
+          reject
+        );
 
         // Added by Alex, for the purpose of Pipeline Visulization
         if (herald.isResponse) {

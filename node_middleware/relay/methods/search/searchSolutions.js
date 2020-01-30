@@ -1,4 +1,5 @@
 const fs = require("fs");
+
 const getSearchSolutionsResults = require("./getSearchSolutionsResults.js");
 
 // import functions
@@ -19,14 +20,17 @@ function searchSolutions(herald) {
   let dataset = herald.getDataset();
   let problemH = herald.getProblem();
 
+  console.log("problemH is:", problemH);
   let problemSchema = problemH.getProblemSchema();
+  // if (!problemSchema.about) {
+  //   console.log(problemSchema);
+  // }
 
   let userAgentTA3 = config.userAgentTA3;
   let grpcVersion = config.grpcVersion;
   let allowed_val_types = config.allowed_val_types;
+  let rank_solutions_limit = 5;
   // remove old solutions
-
-  // let problemSchema = getProblemSchema();
 
   console.log(problemSchema.about.problemID);
 
@@ -34,18 +38,24 @@ function searchSolutions(herald) {
   request.setUserAgent(userAgentTA3);
   request.setVersion(grpcVersion);
 
-  let timeBound = 0;
-  let msg = "";
-  if (herald.ta2Ident.user_agent.startsWith("nyu_ta2")) {
-    timeBound = 10;
-    msg = "nyu ta2 detected; timeBound for searching to " + timeBound;
-  } else {
-    timeBound = 2;
-    msg = "non-nyu ta2 detected; timeBound for searching to " + timeBound;
-  }
-  console.log(msg);
+  let timeBound = 10;
+  // let msg = "";
+  // if (herald.ta2Ident.user_agent.startsWith("nyu_ta2")) {
+  //   timeBound = 10;
+  //   msg = "nyu ta2 detected; timeBound for searching to " + timeBound;
+  // } else {
+  //   timeBound = 6;
+  //   msg = "non-nyu ta2 detected; timeBound for searching to " + timeBound;
+  // }
+  // console.log(msg);
+
+  // if (herald.ta2Ident.user_agent.startsWith("ISI")) {
+  //   timeBound = 15;
+  //   msg = "ISI ta2 detected; timeBound for searching to " + timeBound + "minutes";
+  // }
   request.setTimeBoundSearch(timeBound);
   request.setAllowedValueTypes(allowed_val_types);
+  request.setRankSolutionsLimit(rank_solutions_limit);
 
   var problem_desc = new proto.ProblemDescription();
   var problem = new proto.Problem();
@@ -58,19 +68,12 @@ function searchSolutions(herald) {
   // }
   // problem.setName(problemSchema.about.problemName);
   // problem.setDescription(problemSchema.about.problemDescription + "");
-  problem.setTaskType(
-    getMappedType(task_type_mappings, problemSchema.about.taskType)
-  );
-  // console.log("=-=-");
-  // console.log(problemSchema.about.taskType);
-  // console.log(getMappedType(task_type_mappings, problemSchema.about.taskType));
-  // console.log("-=-=");
-  if (task_subtype_mappings[problemSchema.about.taskSubType]) {
-    problem.setTaskSubtype(
-      getMappedType(task_subtype_mappings, problemSchema.about.taskSubType)
-    );
+  var taskType = getMappedType(task_type_mappings, problemSchema.about.taskType);
+  var subtaskType = getMappedType(task_subtype_mappings, problemSchema.about.taskSubType);
+  if (subtaskType) {
+    problem.setTaskKeywords([taskType, subtaskType]);
   } else {
-    problem.setTaskSubtype(task_subtype_mappings["none"]);
+    problem.setTaskKeywords([taskType]);
   }
 
   // set problemPerformanceMetrics
@@ -117,8 +120,9 @@ function searchSolutions(herald) {
 
   var dataset_input = new proto.Value();
 
+  console.log(handleImageUrl(dataset.getDatasetPath()))
   dataset_input.setDatasetUri(
-    "file://" + handleImageUrl(dataset.getDatasetPath() + "/datasetDoc.json")
+    "file:///" + handleImageUrl(dataset.getDatasetPath()+ "/datasetDoc.json")
   );
   request.setInputs(dataset_input);
   request.setProblem(problem_desc);

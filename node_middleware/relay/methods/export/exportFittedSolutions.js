@@ -7,7 +7,7 @@ function exportFittedSolutions(herald) {
   let solutions = herald.getSolutions();
   let solutions_array = Array.from(solutions.values());
 
-  console.log("solutions.length is:", solutions.length);
+  console.log("solutions_array.length is:", solutions_array.length);
 
   let chain = Promise.resolve();
   solutions_array.forEach(solution => {

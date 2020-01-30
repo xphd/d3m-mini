@@ -3,11 +3,11 @@ const fs = require("fs");
 const proto = require("../../proto.js");
 
 function getProduceSolutionResults(
+  herald,
   solution,
   request_id,
   fulfill,
-  reject,
-  herald
+  reject
 ) {
   // console.log("get produce solution called");
   let solution_id = solution.solution_id;

@@ -6,7 +6,6 @@ const method_mappings = require("../../mappings/method_mappings");
 
 // import functions
 const getMappedType = require("../../functions/getMappedType");
-// const getProblemSchema = require("../../functions/getProblemSchema");
 const handleImageUrl = require("../../functions/handleImageUrl");
 
 const getScoreSolutionResults = require("./getScoreSolutionResults.js");
@@ -20,15 +19,15 @@ function scoreSolution(herald, solution) {
   request.setSolutionId(solution_id);
 
   let dataset_input = new proto.Value();
-  let dataset = herald.getDataset();
   dataset_input.setDatasetUri(
-    "file://" + handleImageUrl(dataset.getDatasetPath() + "/datasetDoc.json")
+    "file:///" + handleImageUrl(herald.getDataset().getDatasetPath()+ "/datasetDoc.json")
   );
   request.setInputs(dataset_input);
 
-  let problemSchema = herald.getProblem().getProblemSchema();
+  let problem = herald.getProblem();
+  let problemSchema = problem.getProblemSchema();
 
-  // let metrics = problemSchema.inputs.performanceMetrics.map(d => d.metric);
+  // let metrics = .inputs.performanceMetrics.map(d => d.metric);
   // let mapped_metrics = metrics.map(metric =>
   //   getMappedType(metric_mappings, metric)
   // );
