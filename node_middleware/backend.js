@@ -3,10 +3,12 @@
 const TA2PORT = "localhost:50054";
 
 const APP_ROOT_PATH = require("app-root-path");
-const datasetPath = APP_ROOT_PATH + "/static/local_testing_data/185_baseball/";
-const problemPath =
-  APP_ROOT_PATH +
-  "/static/local_testing_data/185_baseball/185_baseball_problem";
+// const datasetPath = APP_ROOT_PATH + "/static/local_testing_data/185_baseball/";
+// const problemPath =
+//   APP_ROOT_PATH +
+//   "/static/local_testing_data/185_baseball/185_baseball_problem";
+const datasetPath = APP_ROOT_PATH + "/input/185_baseball/";
+const problemPath = APP_ROOT_PATH + "/input/185_baseball/185_baseball_problem";
 // const TA2PORT = "localhost:50055";
 
 // This backend is used to work with vue frontend

@@ -3,6 +3,7 @@ const fs = require("fs");
 const proto = require("../../proto.js");
 
 function getSearchSolutionsResults(herald, fulfill, reject) {
+  console.log("getSearchSolutionsResults begin");
   // this is needed so that fulfill or reject can be calle later
   let _fulfill = fulfill;
   let _reject = reject;
@@ -26,7 +27,7 @@ function getSearchSolutionsResults(herald, fulfill, reject) {
   }
 
   let promise = new Promise((fulfill, reject) => {
-    // console.log("starting get search solution results call");
+    console.log("getSearchSolutionsResults Promise");
     // if (.ta2Ident.user_agent.startsWith("nyu_ta2")) {
     //   let timeBoundInMinutes = 1;
     //   console.log("NYU detected; making sure they stop sending solutions after a " + timeBoundInMinutes + "min time bound");
@@ -41,7 +42,7 @@ function getSearchSolutionsResults(herald, fulfill, reject) {
     let client = herald.getClient();
     let call = client.getSearchSolutionsResults(request);
     call.on("data", response => {
-      // console.log("searchSolutionResponse", getSearchSolutionsResultsResponse);
+      console.log("getSearchSolutionsResults call");
       // ta2s so not seem to send COMPLETED
       // if (getSearchSolutionsResultsResponse.progress.state === "COMPLETED") {
 
@@ -94,11 +95,13 @@ function getSearchSolutionsResults(herald, fulfill, reject) {
     call.on("error", err => {
       console.log("Error!getSearchSolutionsResults");
       _reject(err);
+      // reject(err);
     });
     call.on("end", err => {
       console.log("End of result: getSearchSolutionsResults");
       if (err) console.log("err is ", err);
       _fulfill(herald);
+      // fulfill(herald);
     });
   });
   return promise;

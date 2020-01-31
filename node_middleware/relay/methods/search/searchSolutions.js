@@ -68,8 +68,14 @@ function searchSolutions(herald) {
   // }
   // problem.setName(problemSchema.about.problemName);
   // problem.setDescription(problemSchema.about.problemDescription + "");
-  var taskType = getMappedType(task_type_mappings, problemSchema.about.taskType);
-  var subtaskType = getMappedType(task_subtype_mappings, problemSchema.about.taskSubType);
+  var taskType = getMappedType(
+    task_type_mappings,
+    problemSchema.about.taskType
+  );
+  var subtaskType = getMappedType(
+    task_subtype_mappings,
+    problemSchema.about.taskSubType
+  );
   if (subtaskType) {
     problem.setTaskKeywords([taskType, subtaskType]);
   } else {
@@ -120,9 +126,10 @@ function searchSolutions(herald) {
 
   var dataset_input = new proto.Value();
 
-  console.log(handleImageUrl(dataset.getDatasetPath()))
+  console.log("123:", handleImageUrl(dataset.getDatasetPath()));
+
   dataset_input.setDatasetUri(
-    "file:///" + handleImageUrl(dataset.getDatasetPath()+ "/datasetDoc.json")
+    "file:///" + handleImageUrl(dataset.getDatasetPath() + "/datasetDoc.json")
   );
   request.setInputs(dataset_input);
   request.setProblem(problem_desc);
