@@ -5,20 +5,22 @@ const config = require("../config.js");
 
 // import mappings
 const metric_mappings = require("../mappings/metric_mappings");
-const task_subtype_mappings = require("../mappings/task_subtype_mappings");
-const task_type_mappings = require("../mappings/task_type_mappings");
+const task_keyword_mappings = require("../../mappings/task_keyword_mappings");
+// const task_subtype_mappings = require("../mappings/task_subtype_mappings");
+// const task_type_mappings = require("../mappings/task_type_mappings");
 
 // import functions
 const getMappedType = require("./getMappedType");
 const handleImageUrl = require("./handleImageUrl");
 
-function problemSetSerachSolutionRequest(herald, problemSet, dirPath) {
+function problemSetSerachSolutionRequest(session, problemSet, dirPath) {
   var request = new proto.SearchSolutionsRequest();
 
   request.setUserAgent(config.userAgentTA3);
   request.setVersion(config.grpcVersion);
-  request.setAllowedValueTypes(config.allowed_val_types);
   request.setTimeBoundSearch(0.25);
+  request.setPriority(0);
+  request.setAllowedValueTypes(config.allowed_val_types);
 
   var problem_desc = new proto.ProblemDescription();
   var problem = new proto.Problem();
@@ -26,17 +28,25 @@ function problemSetSerachSolutionRequest(herald, problemSet, dirPath) {
   // problem.setVersion(problemSet.about.problemVersion);
   // problem.setName(problemSet.about.problemName);
   // problem.setDescription(problemSet.about.problemDescription);
-  problem.setTaskType(
-    getMappedType(task_type_mappings, problemSet.about.taskType)
-  );
+  let taskKeywords = [];
 
-  if (task_subtype_mappings[problemSet.about.taskSubType]) {
-    problem.setTaskSubtype(
-      getMappedType(task_subtype_mappings, problemSet.about.taskSubType)
-    );
-  } else {
-    problem.setTaskSubtype(task_subtype_mappings["none"]);
-  }
+  let problemSchema_about_taskKeywords = problemSchema.about.taskKeywords;
+  problemSchema_about_taskKeywords.forEach(taskKeyword => {
+    taskKeywords.push(getMappedType(task_keyword_mappings, taskKeyword));
+  });
+  problem.setTaskKeywords(taskKeywords);
+
+  // problem.setTaskType(
+  //   getMappedType(task_type_mappings, problemSet.about.taskType)
+  // );
+
+  // if (task_subtype_mappings[problemSet.about.taskSubType]) {
+  //   problem.setTaskSubtype(
+  //     getMappedType(task_subtype_mappings, problemSet.about.taskSubType)
+  //   );
+  // } else {
+  //   problem.setTaskSubtype(task_subtype_mappings["none"]);
+  // }
 
   var metrics = [];
 
@@ -76,10 +86,14 @@ function problemSetSerachSolutionRequest(herald, problemSet, dirPath) {
 
   problem_desc.setInputs(inputs);
 
+  problem_desc.setId(problemSet.about.problemID);
+  problem_desc.setVersion(problemSet.about.problemVersion);
+  problem_desc.setName(problemSet.about.problemName);
+  problem_desc.setDescription(problemSet.about.problemDescription);
   var dataset_input = new proto.Value();
   // dataset_input.setDatasetUri(handleImageUrl(evaluationConfig.dataset_schema));
 
-  let dataset = herald.getDataset();
+  let dataset = session.getCurrentDataset();
   dataset_input.setDatasetUri(
     handleImageUrl(dataset.getDatasetPath() + "/datasetDoc.json")
   );
