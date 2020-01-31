@@ -9,8 +9,9 @@ const handleImageUrl = require("../../functions/handleImageUrl");
 
 // import mappings
 const metric_mappings = require("../../mappings/metric_mappings");
-const task_subtype_mappings = require("../../mappings/task_subtype_mappings");
-const task_type_mappings = require("../../mappings/task_type_mappings");
+const task_keyword_mappings = require("../../mappings/task_keyword_mappings")
+// const task_subtype_mappings = require("../../mappings/task_subtype_mappings");
+// const task_type_mappings = require("../../mappings/task_type_mappings");
 
 const proto = require("../../proto.js");
 const config = require("../../config.js");
@@ -68,19 +69,26 @@ function searchSolutions(herald) {
   // }
   // problem.setName(problemSchema.about.problemName);
   // problem.setDescription(problemSchema.about.problemDescription + "");
-  var taskType = getMappedType(
-    task_type_mappings,
-    problemSchema.about.taskType
-  );
-  var subtaskType = getMappedType(
-    task_subtype_mappings,
-    problemSchema.about.taskSubType
-  );
-  if (subtaskType) {
-    problem.setTaskKeywords([taskType, subtaskType]);
-  } else {
-    problem.setTaskKeywords([taskType]);
-  }
+
+  let taskKeywords = [];
+
+  let problemSchema_about_taskKeywords = problemSchema.about.taskKeywords
+  problemSchema_about_taskKeywords.forEach(taskKeyword => {
+    taskKeywords.push(getMappedType(
+      task_keyword_mappings,
+      taskKeyword
+    ))
+  })
+  problem.setTaskKeywords(taskKeywords)
+  // var subtaskType = getMappedType(
+  //   task_keyword,
+  //   problemSchema.about.taskSubType
+  // );
+  // if (subtaskType) {
+  //   problem.setTaskKeywords([taskType, subtaskType]);
+  // } else {
+  //   problem.setTaskKeywords([taskType]);
+  // }
 
   // set problemPerformanceMetrics
   let problemPerformanceMetrics = [];
