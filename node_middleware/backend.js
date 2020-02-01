@@ -9,11 +9,11 @@ const APP_ROOT_PATH = require("app-root-path");
 //   "/static/local_testing_data/185_baseball/185_baseball_problem";
 
 // const datasetName = "185_baseball"
-const datasetName = "196_autoMpg"
-const datasetPath = APP_ROOT_PATH + "/input/"+datasetName+"/";
-const problemPath = datasetPath+datasetName+"_problem"
-console.log(datasetPath)
-console.log(problemPath)
+const datasetName = "021151886423919075_dataset";
+const datasetPath = APP_ROOT_PATH + "/input/" + datasetName + "/";
+const problemPath = datasetPath + datasetName + "_problem";
+console.log(datasetPath);
+console.log(problemPath);
 // APP_ROOT_PATH + "/input/185_baseball/185_baseball_problem";
 // const TA2PORT = "localhost:50055";
 

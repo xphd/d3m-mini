@@ -4,12 +4,13 @@ const getSearchSolutionsResults = require("./getSearchSolutionsResults.js");
 
 // import functions
 const getMappedType = require("../../functions/getMappedType");
+const handleDatasetUri = require("../../functions/handleDatasetUri");
 // const getProblemSchema = require("../../functions/getProblemSchema");
-const handleImageUrl = require("../../functions/handleImageUrl");
+// const handleImageUrl = require("../../functions/handleImageUrl");
 
 // import mappings
 const metric_mappings = require("../../mappings/metric_mappings");
-const task_keyword_mappings = require("../../mappings/task_keyword_mappings")
+const task_keyword_mappings = require("../../mappings/task_keyword_mappings");
 // const task_subtype_mappings = require("../../mappings/task_subtype_mappings");
 // const task_type_mappings = require("../../mappings/task_type_mappings");
 
@@ -72,14 +73,11 @@ function searchSolutions(herald) {
 
   let taskKeywords = [];
 
-  let problemSchema_about_taskKeywords = problemSchema.about.taskKeywords
+  let problemSchema_about_taskKeywords = problemSchema.about.taskKeywords;
   problemSchema_about_taskKeywords.forEach(taskKeyword => {
-    taskKeywords.push(getMappedType(
-      task_keyword_mappings,
-      taskKeyword
-    ))
-  })
-  problem.setTaskKeywords(taskKeywords)
+    taskKeywords.push(getMappedType(task_keyword_mappings, taskKeyword));
+  });
+  problem.setTaskKeywords(taskKeywords);
   // var subtaskType = getMappedType(
   //   task_keyword,
   //   problemSchema.about.taskSubType
@@ -134,11 +132,13 @@ function searchSolutions(herald) {
 
   var dataset_input = new proto.Value();
 
-  console.log("123:", handleImageUrl(dataset.getDatasetPath()));
-
-  dataset_input.setDatasetUri(
-    "file:///" + handleImageUrl(dataset.getDatasetPath() + "/datasetDoc.json")
+  let datasetUri = handleDatasetUri(
+    dataset.getDatasetPath() + "/datasetDoc.json"
   );
+  // "file:///" + handleImageUrl(dataset.getDatasetPath() + "/datasetDoc.json");
+  console.log("datasetUri is:", datasetUri);
+
+  dataset_input.setDatasetUri(datasetUri);
   request.setInputs(dataset_input);
   request.setProblem(problem_desc);
 
