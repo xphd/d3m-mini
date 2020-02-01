@@ -15,7 +15,7 @@ function produceSolution(herald, solution) {
   let dataset_input = new proto.Value();
 
   // let dataset = herald.getDataset();
-  let datasetUri = herald.handleImageUrl();
+  let datasetUri = herald.getDatasetUri();
   dataset_input.setDatasetUri(
     datasetUri
     // "file:///" + handleImageUrl(dataset.getDatasetPath() + "/datasetDoc.json")

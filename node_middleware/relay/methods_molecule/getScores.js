@@ -49,7 +49,7 @@ function getScore(solution_id, metrics, herald) {
 
   let dataset_input = new proto.Value();
 
-  let datasetUri = herald.handleImageUrl();
+  let datasetUri = herald.getDatasetUri();
   dataset_input.setDatasetUri(
     datasetUri
     // "file:///" + handleImageUrl(dataset.getDatasetPath() + "/datasetDoc.json")

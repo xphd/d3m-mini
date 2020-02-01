@@ -94,9 +94,10 @@ function problemSetSerachSolutionRequest(session, problemSet, dirPath) {
   // dataset_input.setDatasetUri(handleImageUrl(evaluationConfig.dataset_schema));
 
   let dataset = session.getCurrentDataset();
-  dataset_input.setDatasetUri(
-    handleImageUrl(dataset.getDatasetPath() + "/datasetDoc.json")
+  let datasetUri = handleDatasetUri(
+    dataset.getDatasetPath() + "/datasetDoc.json"
   );
+  dataset_input.setDatasetUri(datasetUri);
 
   request.setInputs(dataset_input);
   request.setProblem(problem_desc);
