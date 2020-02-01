@@ -5,7 +5,7 @@ function handleDatasetUri(uri) {
   } else if (uri.includes("output")) {
     index = uri.lastIndexOf("output");
   }
-  let out_uri = "file://" + uri.substring(index);
+  let out_uri = "file:///" + uri.substring(index);
   return out_uri;
 }
 
