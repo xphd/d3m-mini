@@ -9,7 +9,7 @@ const metric_mappings = require("../mappings/metric_mappings");
 
 // import functions
 const getMappedType = require("../functions/getMappedType");
-const handleImageUrl = require("../functions/handleImageUrl");
+const handleImageUrl = require("../functions/legacy/handleImageUrl");
 
 function getScores(solution_ids_selected, metrics, herald) {
   console.log("getScores");
@@ -49,9 +49,10 @@ function getScore(solution_id, metrics, herald) {
 
   let dataset_input = new proto.Value();
 
-  let dataset = herald.getDataset();
+  let datasetUri = herald.handleImageUrl();
   dataset_input.setDatasetUri(
-    "file://" + handleImageUrl(dataset.getDatasetPath() + "/datasetDoc.json")
+    datasetUri
+    // "file:///" + handleImageUrl(dataset.getDatasetPath() + "/datasetDoc.json")
   );
   scoreSolutionRequest.setInputs(dataset_input);
 

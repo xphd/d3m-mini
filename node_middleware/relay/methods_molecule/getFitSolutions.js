@@ -4,7 +4,7 @@ const fs = require("fs");
 const proto = require("../proto.js");
 
 // import functions
-const handleImageUrl = require("../functions/handleImageUrl.js");
+// const handleImageUrl = require("../functions/legacy/handleImageUrl.js/index.js");
 
 function getFitSolutions(solution_ids_selected, herald) {
   console.log("fitSolutions called");
@@ -49,9 +49,10 @@ function getFitSolution(solution_id, herald) {
 
   fitSolutionRequest.setSolutionId(solution_id);
   var dataset_input = new proto.Value();
-  let dataset = herald.getDataset();
+  let datasetUri = herald.getDatasetUri();
   dataset_input.setDatasetUri(
-    "file://" + handleImageUrl(dataset.getDatasetPath() + "/datasetDoc.json")
+    datasetUri
+    // "file:///" + handleImageUrl(dataset.getDatasetPath() + "/datasetDoc.json")
   );
   fitSolutionRequest.setInputs(dataset_input);
 

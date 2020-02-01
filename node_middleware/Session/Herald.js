@@ -10,6 +10,8 @@ class Herald {
     this.port = "localhost:50054"; // port for ta2
     this.solutions = new Map();
 
+    this.datasetUri = null;
+
     // not to be private
     this.isConnected = false;
     this.ta2Ident = null; // string
@@ -49,6 +51,10 @@ class Herald {
     return this.solutions;
   }
 
+  getDatasetUri() {
+    return this.datasetUri;
+  }
+
   // setters
   // setId(id) {
   //   this.id = id;
@@ -71,6 +77,10 @@ class Herald {
 
   setSolutions(solutions) {
     this.solutions = solutions;
+  }
+
+  setDatasetUri(datasetUri) {
+    this.datasetUri = datasetUri;
   }
 }
 

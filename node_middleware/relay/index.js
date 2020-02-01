@@ -6,7 +6,7 @@
 // const proto = require("../protos/proto.js");
 // const grpcVersion = require("../protos/grpcVersion.js");
 
-exports.handleUrl = require("./functions/handleUrl.js");
+// exports.handleUrl = require("./functions/handleUrl.js");
 
 exports.connect = require("./functions/connect.js");
 

@@ -135,8 +135,9 @@ function searchSolutions(herald) {
   let datasetUri = handleDatasetUri(
     dataset.getDatasetPath() + "/datasetDoc.json"
   );
-  // "file:///" + handleImageUrl(dataset.getDatasetPath() + "/datasetDoc.json");
   console.log("datasetUri is:", datasetUri);
+  herald.setDatasetUri(datasetUri);
+  // "file:///" + handleImageUrl(dataset.getDatasetPath() + "/datasetDoc.json");
 
   dataset_input.setDatasetUri(datasetUri);
   request.setInputs(dataset_input);

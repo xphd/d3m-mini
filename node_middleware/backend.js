@@ -8,8 +8,8 @@ const APP_ROOT_PATH = require("app-root-path");
 //   APP_ROOT_PATH +
 //   "/static/local_testing_data/185_baseball/185_baseball_problem";
 
-// const datasetName = "185_baseball"
-const datasetName = "021151886423919075_dataset";
+const datasetName = "185_baseball";
+// const datasetName = "021151886423919075";
 const datasetPath = APP_ROOT_PATH + "/input/" + datasetName + "/";
 const problemPath = datasetPath + datasetName + "_problem";
 console.log(datasetPath);

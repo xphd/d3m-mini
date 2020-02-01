@@ -3,7 +3,7 @@ const fs = require("fs");
 // import variables
 const proto = require("../proto.js");
 // import functions
-const handleImageUrl = require("../functions/handleImageUrl.js");
+// const handleImageUrl = require("../functions/legacy/handleImageUrl.js/index.js");
 
 function getProduceSolutions(solution_ids_selected, herald) {
   let chain = Promise.resolve();
@@ -54,9 +54,10 @@ function getProduceSolution(solution_id, herald) {
   produceSolutionRequest.setFittedSolutionId(fit_id);
 
   let dataset_input = new proto.Value();
-  let dataset = herald.getDataset();
+  let datasetUri = herald.handleImageUrl();
   dataset_input.setDatasetUri(
-    "file://" + handleImageUrl(dataset.getDatasetPath() + "/datasetDoc.json")
+    datasetUri
+    // "file:///" + handleImageUrl(dataset.getDatasetPath() + "/datasetDoc.json")
   );
   produceSolutionRequest.setInputs(dataset_input);
   /*
