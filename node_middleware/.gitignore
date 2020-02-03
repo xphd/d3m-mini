@@ -5,3 +5,4 @@ tufts_gt_wisc_configuration.json
 npm-debug.log
 yarn-error.log
 package-lock.json
+yarn.lock
