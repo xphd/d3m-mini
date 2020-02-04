@@ -1,21 +1,13 @@
 ("use strict");
 
 const TA2PORT = "localhost:50054";
-
 const APP_ROOT_PATH = require("app-root-path");
-// const datasetPath = APP_ROOT_PATH + "/static/local_testing_data/185_baseball/";
-// const problemPath =
-//   APP_ROOT_PATH +
-//   "/static/local_testing_data/185_baseball/185_baseball_problem";
-
-const datasetName = "185_baseball";
-// const datasetName = "021151886423919075";
+const datasetName = "185_baseball_MIN_METADATA";
 const datasetPath = APP_ROOT_PATH + "/input/" + datasetName + "/";
 const problemPath = datasetPath + datasetName + "_problem";
-console.log(datasetPath);
-console.log(problemPath);
-// APP_ROOT_PATH + "/input/185_baseball/185_baseball_problem";
-// const TA2PORT = "localhost:50055";
+console.log("datasetName", datasetName);
+// console.log(datasetPath);
+// console.log(problemPath);
 
 // This backend is used to work with vue frontend
 // it reads files in the folder of "responses" and send wanted infors to frontend
@@ -23,10 +15,7 @@ console.log(problemPath);
 const http = require("http");
 const express = require("express");
 const socketIO = require("socket.io");
-
-// const grpcClientWrapper = require("./Wrapper/Wrapper.js");
 const relay = require("./relay");
-
 const Session = require("./Session/Session.js");
 const Dataset = require("./Session/Dataset.js");
 const Problem = require("./Session/Problem.js");
